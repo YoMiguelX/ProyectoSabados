@@ -1,13 +1,15 @@
 package com.example.demo.Dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class RegistroUsuarioDto {
-
-    private String nombre;
-    private String apellido;
-    private String correo;
-    private String contrasena;
-    private String telefono;
-
+    @NotBlank private String nombre;
+    @NotBlank private String apellido;
+    @Email private String correo;
+    @NotBlank private String contrasena;
+    @Size(min = 7, max = 15) private String telefono;
     // Constructor vacío
     public RegistroUsuarioDto() {}
 

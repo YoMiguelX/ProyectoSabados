@@ -4,6 +4,7 @@ import com.example.demo.Dto.RegistroUsuarioDto;
 import com.example.demo.Dto.Response.ApiResponse;
 import com.example.demo.Dto.UsuarioDto;
 import com.example.demo.Interface.IUsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class UsuarioRestController {
     }
 
     @PostMapping
-    public ApiResponse<UsuarioDto> registrar(@RequestBody RegistroUsuarioDto dto) {
+    public ApiResponse<UsuarioDto> registrar(@Valid @RequestBody RegistroUsuarioDto dto) {
         return usuarioService.registrarUsuario(dto);
     }
 

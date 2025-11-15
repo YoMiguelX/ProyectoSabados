@@ -1,5 +1,6 @@
 package com.example.demo.Services;
 
+import com.example.demo.Config.JwtUtil;
 import com.example.demo.Dto.RegistroUsuarioDto;
 import com.example.demo.Dto.UsuarioDto;
 import com.example.demo.Dto.Response.ApiResponse;
@@ -171,9 +172,13 @@ public class UsuarioService implements IUsuarioService {
 
             UsuarioDto dto = mapearUsuarioAUsuarioDto(usuario);
 
+            // Generar token JWT
+            String token = JwtUtil.generarToken(usuario.getCorreoUsuario(), usuario.getRol().getIdRol());
+
             response.setHttpStatusCode(HttpStatus.OK.value());
             response.setMessage("Inicio de sesión exitoso");
             response.setData(dto);
+            response.setToken(token);
         } catch (EntityNotFoundException ex) {
             response.setHttpStatusCode(HttpStatus.UNAUTHORIZED.value());
             response.setMessage(ex.getMessage());
@@ -183,6 +188,7 @@ public class UsuarioService implements IUsuarioService {
         }
         return response;
     }
+
 
     public UsuarioDto mapearUsuarioAUsuarioDto(Usuario usuario) {
         return new UsuarioDto(

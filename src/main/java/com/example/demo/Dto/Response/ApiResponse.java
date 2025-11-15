@@ -9,7 +9,7 @@ public class ApiResponse<T> {
     private T data;
     private List<String> errors;
     private Object extraData;
-
+    private String token;
     // Paginación
     private Integer totalRecords;
     private Integer pageNumber;
@@ -54,4 +54,6 @@ public class ApiResponse<T> {
 
     public Integer getPageSize() { return pageSize; }
     public void setPageSize(Integer pageSize) { this.pageSize = pageSize; }
+    public String getToken(){ return token;}
+    public void setToken(String token){this.token = token;}
 }
