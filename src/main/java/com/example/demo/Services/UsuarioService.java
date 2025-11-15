@@ -26,14 +26,13 @@ public class UsuarioService implements IUsuarioService {
     private final UsuarioRepository repo;
     private final ModelMapper mapper;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final JwtUtil jwtUtil; // <-- campo nuevo
 
-
-
-    public UsuarioService(UsuarioRepository repo, ModelMapper mapper) {
+    public UsuarioService(UsuarioRepository repo, ModelMapper mapper, JwtUtil jwtUtil) {
         this.repo = repo;
         this.mapper = mapper;
+        this.jwtUtil = jwtUtil;
     }
-
     @Override
     public ApiResponse<List<UsuarioDto>> findAll() {
         ApiResponse<List<UsuarioDto>> response = new ApiResponse<>();
@@ -172,8 +171,9 @@ public class UsuarioService implements IUsuarioService {
 
             UsuarioDto dto = mapearUsuarioAUsuarioDto(usuario);
 
-            // Generar token JWT
-            String token = JwtUtil.generarToken(usuario.getCorreoUsuario(), usuario.getRol().getIdRol());
+            // usar la instancia inyectada
+            String token = jwtUtil.generarToken(usuario.getCorreoUsuario(),
+                    usuario.getRol() != null ? usuario.getRol().getIdRol() : 2);
 
             response.setHttpStatusCode(HttpStatus.OK.value());
             response.setMessage("Inicio de sesión exitoso");

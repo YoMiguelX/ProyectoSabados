@@ -32,6 +32,7 @@ public class UsuarioRestController {
         return usuarioService.login(dto.getCorreo(), dto.getContrasena());
     }
 
+
     @GetMapping("/{id}")
     public ApiResponse<UsuarioDto> obtener(@PathVariable Integer id) {
         return usuarioService.findById(id);
