@@ -20,7 +20,7 @@ public class Jugador extends BaseModel{
     private Integer progreso;
 
     @ManyToOne
-    @JoinColumn(name = "idUsuario", referencedColumnName = "idUsuario")
+    @JoinColumn(name = "ID_USUARIO")
     private Usuario usuario;
 
     @ManyToOne

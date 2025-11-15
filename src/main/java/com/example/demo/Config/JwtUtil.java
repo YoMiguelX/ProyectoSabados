@@ -23,7 +23,13 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
-        byte[] decoded = Base64.getDecoder().decode(secretBase64);
+        // Intentar decodificar como Base64 estándar y si falla, como Base64URL
+        byte[] decoded;
+        try {
+            decoded = Base64.getDecoder().decode(secretBase64);
+        } catch (IllegalArgumentException ex) {
+            decoded = Base64.getUrlDecoder().decode(secretBase64);
+        }
         this.key = Keys.hmacShaKeyFor(decoded);
     }
 
@@ -33,7 +39,7 @@ public class JwtUtil {
                 .claim("rol", rolId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(key)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 

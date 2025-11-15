@@ -5,7 +5,9 @@ import com.example.demo.Dto.RegistroUsuarioDto;
 import com.example.demo.Dto.UsuarioDto;
 import com.example.demo.Dto.Response.ApiResponse;
 import com.example.demo.Interface.IUsuarioService;
+import com.example.demo.Model.Rol;
 import com.example.demo.Model.Usuario;
+import com.example.demo.Repository.RolRepository;
 import com.example.demo.Repository.UsuarioRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,13 +28,21 @@ public class UsuarioService implements IUsuarioService {
     private final UsuarioRepository repo;
     private final ModelMapper mapper;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    private final JwtUtil jwtUtil; // <-- campo nuevo
+    private final JwtUtil jwtUtil;
+    private final RolRepository rolRepository; // <-- agregado
 
-    public UsuarioService(UsuarioRepository repo, ModelMapper mapper, JwtUtil jwtUtil) {
+    public UsuarioService(
+            UsuarioRepository repo,
+            ModelMapper mapper,
+            JwtUtil jwtUtil,
+            RolRepository rolRepository // <-- agregado
+    ) {
         this.repo = repo;
         this.mapper = mapper;
         this.jwtUtil = jwtUtil;
+        this.rolRepository = rolRepository; // <-- agregado
     }
+
     @Override
     public ApiResponse<List<UsuarioDto>> findAll() {
         ApiResponse<List<UsuarioDto>> response = new ApiResponse<>();
@@ -83,7 +93,9 @@ public class UsuarioService implements IUsuarioService {
     @Override
     public ApiResponse<UsuarioDto> registrarUsuario(RegistroUsuarioDto dto) {
         ApiResponse<UsuarioDto> response = new ApiResponse<>();
+
         try {
+            // Validar correo
             if (repo.findByCorreoUsuario(dto.getCorreo()).isPresent()) {
                 throw new RuntimeException("Ya existe un usuario con ese correo");
             }
@@ -96,21 +108,28 @@ public class UsuarioService implements IUsuarioService {
             usuario.setTelUsuario(dto.getTelefono());
             usuario.setEstadoUsuario("Activo");
             usuario.setFechaCreacion(LocalDateTime.now());
-            usuario.setRolIdRol(2); // rol por defecto
+
+            // ASIGNAR SIEMPRE ROL 2 A USUARIOS NORMALES
+            Rol rol = rolRepository.findById(2)
+                    .orElseThrow(() -> new RuntimeException("El rol 2 (Usuario normal) no existe"));
+
+            usuario.setRol(rol);
 
             Usuario saved = repo.save(usuario);
-            UsuarioDto mapped = mapper.map(saved, UsuarioDto.class);
+            UsuarioDto dtoMapped = mapper.map(saved, UsuarioDto.class);
 
             response.setHttpStatusCode(HttpStatus.CREATED.value());
             response.setMessage("Usuario registrado exitosamente");
-            response.setData(mapped);
+            response.setData(dtoMapped);
+
         } catch (Exception ex) {
             response.setHttpStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error al registrar usuario");
-            response.setErrors(List.of(ex.getMessage()));
+            response.setMessage("Error al registrar usuario: " + ex.getMessage());
         }
+
         return response;
     }
+
 
     @Transactional
     @Override

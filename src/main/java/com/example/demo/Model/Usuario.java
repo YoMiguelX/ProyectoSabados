@@ -5,26 +5,45 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Entity
 @Table(name = "usuario")
-public class Usuario extends BaseModel{
+public class Usuario extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_USUARIO")
     private Integer idUsuario;
+
+    @Column(name = "reset_token")
     private String resetToken;
+
+    @Column(name = "reset_token_expiration")
     private LocalDateTime resetTokenExpiration;
+
+    @Column(name = "nombre_usuario")
     private String nombreUsuario;
+
+    @Column(name = "apellido_usuario")
     private String apellidoUsuario;
+
+    @Column(name = "tel_usuario")
     private String telUsuario;
+
+    @Column(name = "correo_usuario")
     private String correoUsuario;
+
+    @Column(name = "contrasena")
     private String contrasena;
+
+    @Column(name = "estado_usuario")
     private String estadoUsuario;
+
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "rol_ID_ROL", referencedColumnName = "ID_ROL")
+    @JoinColumn(name = "rol_ID_ROL", referencedColumnName = "ID_ROL", nullable = false)
     private Rol rol;
 
     @OneToMany(mappedBy = "usuario")

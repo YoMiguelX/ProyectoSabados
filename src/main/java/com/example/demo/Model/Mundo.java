@@ -12,8 +12,9 @@ public class Mundo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_MUNDOS")
     private Long id;
-
+    @Column(name = "NOMBRE_MUNDO")
     private String nombre;
 
     @OneToMany(mappedBy = "mundo")
