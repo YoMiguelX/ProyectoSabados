@@ -19,8 +19,6 @@ public class Rol {
 
 
 
-    @Column(name = "tipo_rol")
-    private String tipoRol;
 
     @OneToMany(mappedBy = "rol")
     private List<Usuario> usuarios;
@@ -40,13 +38,7 @@ public class Rol {
         this.nombreRol = nombreRol;
     }
 
-    public String getTipoRol() {
-        return tipoRol;
-    }
 
-    public void setTipoRol(String tipoRol) {
-        this.tipoRol = tipoRol;
-    }
 
     public List<Usuario> getUsuarios() {
         return usuarios;

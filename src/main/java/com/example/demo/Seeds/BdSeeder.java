@@ -25,12 +25,12 @@ public class BdSeeder  implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if (rolRepository.count() == 0) {
             Rol admin = new Rol();
-            admin.setTipoRol("ADMIN");
+            admin.setIdRol(1);
             admin.setNombreRol("Administrador");
             rolRepository.save(admin);
 
             Rol user = new Rol();
-            user.setTipoRol("USER");
+            user.setIdRol(2);
             user.setNombreRol("Usuario");
             rolRepository.save(user);
 

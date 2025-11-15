@@ -4,11 +4,14 @@ import com.example.demo.Dto.RegistroUsuarioDto;
 import com.example.demo.Dto.Response.ApiResponse;
 import com.example.demo.Dto.UsuarioDto;
 import com.example.demo.Interface.IUsuarioService;
+import com.example.demo.Services.PasswordResetService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -47,4 +50,28 @@ public class UsuarioRestController {
     public void eliminar(@PathVariable Integer id) {
         usuarioService.delete(id);
     }
+
+    @RestController
+    @RequestMapping("/auth")
+    public class PasswordResetController {
+
+        private final PasswordResetService resetService;
+
+        public PasswordResetController(PasswordResetService resetService) {
+            this.resetService = resetService;
+        }
+
+        @PostMapping("/password-reset-request")
+        public ResponseEntity<?> requestReset(@RequestBody UsuarioDto.PasswordResetRequestDto dto) {
+            resetService.createAndSendToken(dto.email());
+            return ResponseEntity.ok(Map.of("message","Si el correo existe, se envió el enlace de restablecimiento"));
+        }
+
+        @PostMapping("/password-reset-confirm")
+        public ResponseEntity<?> confirmReset(@RequestBody UsuarioDto.PasswordResetConfirmDto dto) {
+            resetService.resetPassword(dto.token(), dto.newPassword());
+            return ResponseEntity.ok(Map.of("message","Contraseña actualizada"));
+        }
+    }
+
 }

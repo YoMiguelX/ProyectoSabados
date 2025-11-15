@@ -9,6 +9,8 @@ public class UsuarioDto {
     private String telefono;
     private String estado;
     private Integer rolId;
+    public record PasswordResetRequestDto(String email) {}
+    public record PasswordResetConfirmDto(String token, String newPassword) {}
 
     // Constructor vacío
     public UsuarioDto() {}
