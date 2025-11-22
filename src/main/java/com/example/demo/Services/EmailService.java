@@ -28,5 +28,10 @@ public class EmailService {
                 "Usa este enlace para cambiar tu contraseña (válido 15 min):\n\n" + resetLink +
                 "\n\nSi no pediste esto, ignora este correo.");
         mailSender.send(msg);
+        System.out.println("sebastian haga el email sevice");
     }
+
+
+
+
 }
