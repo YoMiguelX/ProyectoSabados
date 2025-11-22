@@ -1,9 +1,9 @@
 package com.example.demo.Repository;
 
-import com.example.demo.Model.Nivel;
+import com.example.demo.Model.Mundo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface NivelRepository extends JpaRepository<Nivel, Integer> {
+public interface MundosRepository extends JpaRepository<Mundo, Long> {
 }
