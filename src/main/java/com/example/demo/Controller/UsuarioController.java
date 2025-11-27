@@ -46,30 +46,26 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public String procesarLogin(
-            @RequestParam String correo,
-            @RequestParam String contrasena,
-            HttpSession session,
-            Model model) {
-
+    public String procesarLogin(@RequestParam String correo,
+                                @RequestParam String contrasena,
+                                HttpSession session,
+                                Model model) {
         ApiResponse<UsuarioDto> respuesta = usuarioService.login(correo, contrasena);
 
         if (respuesta.getHttpStatusCode() == 200) {
             UsuarioDto dto = respuesta.getData();
             session.setAttribute("usuarioId", dto.getId());
             session.setAttribute("usuarioLogueado", true);
+            session.setAttribute("jwtToken", respuesta.getToken()); // solo guardo el token
 
-            if (dto.getRolId() != null && dto.getRolId() == 1) {
-                return "redirect:/admin/lista";
-            } else {
-                return "redirect:/perfil";
-            }
+            return dto.getRolId() != null && dto.getRolId() == 1
+                    ? "redirect:/admin/lista"
+                    : "redirect:/perfil";
         } else {
             model.addAttribute("error", respuesta.getMessage());
             return "login";
         }
     }
-
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

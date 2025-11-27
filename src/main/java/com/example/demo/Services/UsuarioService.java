@@ -1,6 +1,6 @@
 package com.example.demo.Services;
 
-import com.example.demo.Config.JwtUtil;
+import com.example.demo.config.JwtUtil;
 import com.example.demo.Dto.RegistroUsuarioDto;
 import com.example.demo.Dto.UsuarioDto;
 import com.example.demo.Dto.Response.ApiResponse;
@@ -21,9 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UsuarioService implements IUsuarioService {
+
 
     private final UsuarioRepository repo;
     private final ModelMapper mapper;
@@ -101,8 +103,8 @@ public class UsuarioService implements IUsuarioService {
             }
 
             Usuario usuario = new Usuario();
-            usuario.setNombreUsuario(dto.getNombre());
-            usuario.setApellidoUsuario(dto.getApellido());
+            usuario.setNombreUsuario(dto.getNombreUsuario());
+            usuario.setApellidoUsuario(dto.getApellidoUsuario());
             usuario.setCorreoUsuario(dto.getCorreo());
             usuario.setContrasena(encoder.encode(dto.getContrasena()));
             usuario.setTelUsuario(dto.getTelefono());
@@ -190,7 +192,6 @@ public class UsuarioService implements IUsuarioService {
 
             UsuarioDto dto = mapearUsuarioAUsuarioDto(usuario);
 
-            // usar la instancia inyectada
             String token = jwtUtil.generarToken(usuario.getCorreoUsuario(),
                     usuario.getRol() != null ? usuario.getRol().getIdRol() : 2);
 
@@ -198,11 +199,8 @@ public class UsuarioService implements IUsuarioService {
             response.setMessage("Inicio de sesión exitoso");
             response.setData(dto);
             response.setToken(token);
-        } catch (EntityNotFoundException ex) {
-            response.setHttpStatusCode(HttpStatus.UNAUTHORIZED.value());
-            response.setMessage(ex.getMessage());
         } catch (Exception ex) {
-            response.setHttpStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setHttpStatusCode(HttpStatus.UNAUTHORIZED.value());
             response.setMessage("Error al iniciar sesión: " + ex.getMessage());
         }
         return response;
@@ -223,9 +221,30 @@ public class UsuarioService implements IUsuarioService {
     @PostConstruct
     public void configurarMapper() {
         mapper.typeMap(Usuario.class, UsuarioDto.class).addMappings(m -> {
+            m.map(Usuario::getNombreUsuario, UsuarioDto::setNombre);
+            m.map(Usuario::getApellidoUsuario, UsuarioDto::setApellido);
+            m.map(Usuario::getCorreoUsuario, UsuarioDto::setCorreo);
             m.map(Usuario::getTelUsuario, UsuarioDto::setTelefono);
             m.map(src -> src.getRol() != null ? src.getRol().getIdRol() : null, UsuarioDto::setRolId);
         });
+    }
+
+
+    public Usuario buscarPorCorreo(String correo) {
+        return repo.findByCorreoUsuario(correo).orElse(null);
+    }
+    public String generarToken(Usuario usuario) {
+        String token = UUID.randomUUID().toString();
+        usuario.setResetToken(token);
+        usuario.setResetTokenExpiration(LocalDateTime.now().plusHours(1));
+        repo.save(usuario);
+        return token;
+    }
+    public Usuario buscarPorToken(String token) {
+        return repo.findByResetToken(token).orElse(null);
+    }
+    public Usuario guardarUsuario(Usuario usuario) {
+        return repo.save(usuario);
     }
 
 }

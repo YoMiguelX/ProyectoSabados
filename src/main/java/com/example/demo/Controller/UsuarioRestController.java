@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Dto.LoginDto;
 import com.example.demo.Dto.RegistroUsuarioDto;
 import com.example.demo.Dto.Response.ApiResponse;
 import com.example.demo.Dto.UsuarioDto;
@@ -31,12 +32,12 @@ public class UsuarioRestController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<UsuarioDto> login(@RequestBody RegistroUsuarioDto dto) {
+    public ApiResponse<UsuarioDto> login(@RequestBody LoginDto dto) {
         return usuarioService.login(dto.getCorreo(), dto.getContrasena());
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ApiResponse<UsuarioDto> obtener(@PathVariable Integer id) {
         return usuarioService.findById(id);
     }
