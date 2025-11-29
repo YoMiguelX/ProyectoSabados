@@ -13,19 +13,26 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class UsuarioService implements IUsuarioService {
+    @Autowired
 
+
+
+    private PasswordEncoder passwordEncoder;
 
     private final UsuarioRepository repo;
     private final ModelMapper mapper;
@@ -70,6 +77,12 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
+    public List<Usuario> obtenerTodosLosAdmins() {
+        return repo.findByRol_IdRol(1); // 1 = Admin
+    }
+
+
+    @Override
     public ApiResponse<UsuarioDto> findById(Integer id) {
         ApiResponse<UsuarioDto> response = new ApiResponse<>();
         try {
@@ -106,7 +119,7 @@ public class UsuarioService implements IUsuarioService {
             usuario.setNombreUsuario(dto.getNombreUsuario());
             usuario.setApellidoUsuario(dto.getApellidoUsuario());
             usuario.setCorreoUsuario(dto.getCorreo());
-            usuario.setContrasena(encoder.encode(dto.getContrasena()));
+            usuario.setContrasena(passwordEncoder.encode(dto.getContrasena()));
             usuario.setTelUsuario(dto.getTelefono());
             usuario.setEstadoUsuario("Activo");
             usuario.setFechaCreacion(LocalDateTime.now());
@@ -118,7 +131,15 @@ public class UsuarioService implements IUsuarioService {
             usuario.setRol(rol);
 
             Usuario saved = repo.save(usuario);
-            UsuarioDto dtoMapped = mapper.map(saved, UsuarioDto.class);
+            UsuarioDto dtoMapped = new UsuarioDto();
+            dtoMapped.setId(saved.getIdUsuario());
+            dtoMapped.setNombre(saved.getNombreUsuario());
+            dtoMapped.setApellido(saved.getApellidoUsuario());
+            dtoMapped.setCorreo(saved.getCorreoUsuario());
+            dtoMapped.setTelefono(saved.getTelUsuario());
+            dtoMapped.setEstado(saved.getEstadoUsuario());
+            dtoMapped.setRolId(saved.getRol().getIdRol());
+
 
             response.setHttpStatusCode(HttpStatus.CREATED.value());
             response.setMessage("Usuario registrado exitosamente");
@@ -202,8 +223,20 @@ public class UsuarioService implements IUsuarioService {
         } catch (Exception ex) {
             response.setHttpStatusCode(HttpStatus.UNAUTHORIZED.value());
             response.setMessage("Error al iniciar sesión: " + ex.getMessage());
+
         }
         return response;
+    }
+
+    @Override
+    public Usuario loginWeb(String correo, String contrasena) {
+        Usuario usuario = repo.findByCorreoUsuario(correo)
+                .orElseThrow(() -> new EntityNotFoundException("Credenciales inválidas"));
+
+        if (!encoder.matches(contrasena, usuario.getContrasena())) {
+            throw new EntityNotFoundException("Credenciales inválidas");
+        }
+        return usuario;
     }
 
 
@@ -245,6 +278,24 @@ public class UsuarioService implements IUsuarioService {
     }
     public Usuario guardarUsuario(Usuario usuario) {
         return repo.save(usuario);
+    }
+
+    @Override
+    public List<Usuario> filtrar(Integer rol, String nombre, String apellido, String correo, String telefono) {
+        return repo.filtrar(rol, nombre, apellido, correo, telefono);
+    }
+
+    public ApiResponse<UsuarioDto> findByCorreo(String correo) {
+        Usuario usuario = repo.findByCorreoUsuario(correo)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        UsuarioDto dto = new UsuarioDto();
+        dto.setId(usuario.getIdUsuario());
+        dto.setNombre(usuario.getNombreUsuario());
+        dto.setCorreo(usuario.getCorreoUsuario());
+        dto.setApellido(usuario.getApellidoUsuario());
+
+        return new ApiResponse<>(dto);
     }
 
 }

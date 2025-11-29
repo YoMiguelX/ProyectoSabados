@@ -1,4 +1,4 @@
 package com.example.demo.Interface;
 
-public interface IUserDetailService {
+public interface IUserDetailsService {
 }

@@ -15,6 +15,15 @@ public class ApiResponse<T> {
     private Integer pageNumber;
     private Integer pageSize;
 
+
+    private boolean success;
+
+
+    public ApiResponse(T data) {
+        this.data = data;
+        this.success = true;
+        this.message = "OK";
+    }
     public Integer getTotalPages() {
         if (pageSize != null && pageSize > 0 && totalRecords != null)
             return (int) Math.ceil((double) totalRecords / pageSize);
@@ -31,6 +40,15 @@ public class ApiResponse<T> {
     }
 
     // --- Getters & Setters ---
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
     public int getHttpStatusCode() { return httpStatusCode; }
     public void setHttpStatusCode(int httpStatusCode) { this.httpStatusCode = httpStatusCode; }
 

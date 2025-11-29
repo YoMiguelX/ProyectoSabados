@@ -4,11 +4,13 @@ import com.example.demo.Dto.RegistroUsuarioDto;
 import com.example.demo.Dto.Response.ApiResponse;
 import com.example.demo.Dto.UsuarioDto;
 import com.example.demo.Interface.IUsuarioService;
+import com.example.demo.Model.Usuario;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class UsuarioController {
@@ -36,36 +38,35 @@ public class UsuarioController {
             return "registro";
         }
     }
-
     @GetMapping("/login")
-    public String mostrarLogin(HttpSession session) {
-        if (session.getAttribute("usuarioLogueado") != null) {
-            return "redirect:/home";
-        }
-        return "login";
+    public String mostrarLogin(Model model) {
+        return "login"; // nombre del archivo plantilla login.html
     }
 
     @PostMapping("/login")
-    public String procesarLogin(@RequestParam String correo,
-                                @RequestParam String contrasena,
-                                HttpSession session,
-                                Model model) {
-        ApiResponse<UsuarioDto> respuesta = usuarioService.login(correo, contrasena);
+    public String validarLogin(@RequestParam String correo,
+                               @RequestParam String contrasena,
+                               HttpSession session) {
 
-        if (respuesta.getHttpStatusCode() == 200) {
-            UsuarioDto dto = respuesta.getData();
-            session.setAttribute("usuarioId", dto.getId());
-            session.setAttribute("usuarioLogueado", true);
-            session.setAttribute("jwtToken", respuesta.getToken()); // solo guardo el token
+        ApiResponse<UsuarioDto> response = usuarioService.login(correo, contrasena);
 
-            return dto.getRolId() != null && dto.getRolId() == 1
-                    ? "redirect:/admin/lista"
-                    : "redirect:/perfil";
+        if (response.getData() == null) {
+            return "redirect:/login?error=true";
+        }
+
+        UsuarioDto usuario = response.getData();
+
+        session.setAttribute("usuarioLog", usuario);
+        session.setAttribute("rol", usuario.getRolId());
+
+        if (usuario.getRolId() == 1) {
+            return "redirect:/admin/lista";
         } else {
-            model.addAttribute("error", respuesta.getMessage());
-            return "login";
+            return "redirect:/perfil";
         }
     }
+
+
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
