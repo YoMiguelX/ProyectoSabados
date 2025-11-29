@@ -36,7 +36,7 @@ public class UsuarioService implements IUsuarioService {
 
     private final UsuarioRepository repo;
     private final ModelMapper mapper;
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     private final JwtUtil jwtUtil;
     private final RolRepository rolRepository; // <-- agregado
 
@@ -208,7 +208,8 @@ public class UsuarioService implements IUsuarioService {
         ApiResponse<UsuarioDto> response = new ApiResponse<>();
         try {
             Usuario usuario = repo.findByCorreoUsuario(correo)
-                    .filter(u -> encoder.matches(contrasena, u.getContrasena()))
+                    .filter(u -> passwordEncoder.matches(contrasena, u.getContrasena()))
+
                     .orElseThrow(() -> new EntityNotFoundException("Credenciales inválidas"));
 
             UsuarioDto dto = mapearUsuarioAUsuarioDto(usuario);
@@ -233,12 +234,13 @@ public class UsuarioService implements IUsuarioService {
         Usuario usuario = repo.findByCorreoUsuario(correo)
                 .orElseThrow(() -> new EntityNotFoundException("Credenciales inválidas"));
 
-        if (!encoder.matches(contrasena, usuario.getContrasena())) {
+        // Usar passwordEncoder para comparar
+        if (!passwordEncoder.matches(contrasena, usuario.getContrasena())) {
             throw new EntityNotFoundException("Credenciales inválidas");
         }
+
         return usuario;
     }
-
 
     public UsuarioDto mapearUsuarioAUsuarioDto(Usuario usuario) {
         return new UsuarioDto(

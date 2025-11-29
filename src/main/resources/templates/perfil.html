@@ -10,181 +10,155 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
-<body>
+<body class="bg-gray-100">
 <div th:replace="~{plantilla/navbar :: navbar}"></div>
 
-<div class="perfil-container">
+<div class="flex min-h-screen">
     <!-- Sidebar -->
-    <aside>
-        <div class="sidebar-content">
-            <!-- Avatar Section -->
-            <div class="avatar-section">
-                <div class="avatar-wrapper">
-                    <img id="avatarSidebar"
-                         src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                         alt="avatar">
-                    <button class="avatar-btn">
-                        <i class="fas fa-camera"></i>
-                    </button>
-                </div>
-                <h3 class="user-name" th:text="${usuario.nombre}">Usuario</h3>
-                <p class="user-email" th:text="${usuario.correo}">correo@ejemplo.com</p>
-                <span class="user-status">
-            <i class="fas fa-check-circle"></i> Cuenta Activa
-          </span>
-            </div>
+    <aside class="w-64 bg-white shadow-md">
+        <div class="p-4 text-center">
+            <!-- Avatar -->
+            <img id="avatarSidebar" class="w-24 h-24 rounded-full mx-auto mb-2"
+                 src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar">
+            <button type="button" class="text-blue-500"><i class="fas fa-camera"></i></button>
+            <h3 class="font-bold text-lg" th:text="${usuario.nombreUsuario} ?: 'Usuario'">Usuario</h3>
+            <p class="text-sm text-gray-500" th:text="${usuario.correoUsuario} ?: 'correo@ejemplo.com'">correo@ejemplo.com</p>
+            <span class="text-green-500 text-sm"><i class="fas fa-check-circle"></i> Cuenta Activa</span>
 
             <!-- Navegación -->
-            <nav>
-                <div class="nav-section">
-                    <h4 class="nav-title">Cuenta</h4>
-                    <ul class="nav-list">
-                        <li class="nav-item active" id="item-informacion" onclick="mostrarSeccion('informacion')">
-                            <i class="fas fa-user-circle"></i>
-                            <span>Tu información</span>
-                        </li>
-                        <li class="nav-item" id="item-seguridad" onclick="mostrarSeccion('seguridad')">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Seguridad</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h4 class="nav-title">Red Amigos</h4>
-                    <ul class="nav-list">
-                        <li class="nav-item" id="item-perfil" onclick="mostrarSeccion('perfil')">
-                            <i class="fas fa-id-card"></i>
-                            <span>Perfil</span>
-                        </li>
-                        <li class="nav-item" id="item-privacidad" onclick="mostrarSeccion('privacidad')">
-                            <i class="fas fa-lock"></i>
-                            <span>Privacidad</span>
-                        </li>
-                        <li class="nav-item" id="item-familia" onclick="mostrarSeccion('familia')">
-                            <i class="fas fa-users"></i>
-                            <span>Familia</span>
-                        </li>
-                        <li class="nav-item" id="item-reporte" onclick="mostrarSeccion('reporte')">
-                            <i class="fas fa-flag"></i>
-                            <span>Reportes</span>
-                        </li>
-                    </ul>
-                </div>
+            <nav class="mt-6 text-left">
+                <h4 class="font-semibold mb-2">Cuenta</h4>
+                <ul>
+                    <li class="py-2 px-2 cursor-pointer hover:bg-gray-200" onclick="mostrarSeccion('informacion')">
+                        <i class="fas fa-user-circle"></i> Tu información
+                    </li>
+                    <li class="py-2 px-2 cursor-pointer hover:bg-gray-200" onclick="mostrarSeccion('seguridad')">
+                        <i class="fas fa-shield-alt"></i> Seguridad
+                    </li>
+                </ul>
+                <h4 class="font-semibold mt-4 mb-2">Red Amigos</h4>
+                <ul>
+                    <li class="py-2 px-2 cursor-pointer hover:bg-gray-200" onclick="mostrarSeccion('perfil')">
+                        <i class="fas fa-id-card"></i> Perfil
+                    </li>
+                    <li class="py-2 px-2 cursor-pointer hover:bg-gray-200" onclick="mostrarSeccion('privacidad')">
+                        <i class="fas fa-lock"></i> Privacidad
+                    </li>
+                    <li class="py-2 px-2 cursor-pointer hover:bg-gray-200" onclick="mostrarSeccion('familia')">
+                        <i class="fas fa-users"></i> Familia
+                    </li>
+                    <li class="py-2 px-2 cursor-pointer hover:bg-gray-200" onclick="mostrarSeccion('reporte')">
+                        <i class="fas fa-flag"></i> Reportes
+                    </li>
+                </ul>
             </nav>
 
-            <a th:href="@{/logout}" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Cerrar sesión</span>
+            <a th:href="@{/logout}" class="flex items-center mt-6 text-red-500 hover:text-red-700">
+                <i class="fas fa-sign-out-alt mr-2"></i> Cerrar sesión
             </a>
         </div>
     </aside>
 
     <!-- Contenido Principal -->
-    <main>
+    <main class="flex-1 p-6">
         <!-- Sección: Tu Información -->
-        <section id="informacion" class="seccion visible fade-in">
-            <div class="content-card">
-                <div class="section-title">
-                    <span>Tu información</span>
-                    <button onclick="toggleEditarInfo()" id="btnEditarInfo" class="btn-primary">
-                        <i class="fas fa-edit"></i>
-                        <span>Editar</span>
+        <section id="informacion" class="seccion">
+            <div class="bg-white p-6 rounded shadow-md mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold text-xl">Tu información</h2>
+                    <button id="btnEditarInfo" type="button" class="btn btn-primary flex items-center" onclick="toggleEditarInfo()">
+                        <i class="fas fa-edit mr-2"></i> Editar
                     </button>
                 </div>
 
                 <form th:action="@{/usuario/actualizar-info}" method="post" id="formActualizarInfo">
-                    <!-- Nombre -->
-                    <div class="info-field">
-                        <div class="field-header">
-                            <div style="flex: 1;">
-                                <div class="field-label">Nombre</div>
-                                <div id="displayNombre" class="field-value" th:text="${usuario.nombre}">Nombre</div>
-                                <input type="text" name="nombre" id="inputNombre"
-                                       th:value="${usuario.nombre}"
-                                       class="field-input hidden" required />
-                            </div>
-                            <i class="fas fa-user field-icon"></i>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Nombre -->
+                        <div>
+                            <label class="font-semibold">Nombre</label>
+                            <div id="displayNombre" th:text="${usuario.nombreUsuario} ?: 'Nombre'">Nombre</div>
+                            <input type="text" name="nombreUsuario" id="inputNombre"
+                                   th:value="${usuario.nombreUsuario}" class="hidden border rounded w-full p-2" required>
+                        </div>
+                        <!-- Apellido -->
+                        <div>
+                            <label class="font-semibold">Apellido</label>
+                            <div id="displayApellido" th:text="${usuario.apellidoUsuario} ?: 'Apellido'">Apellido</div>
+                            <input type="text" name="apellidoUsuario" id="inputApellido"
+                                   th:value="${usuario.apellidoUsuario}" class="hidden border rounded w-full p-2" required>
+                        </div>
+                        <!-- Correo -->
+                        <div>
+                            <label class="font-semibold">Correo electrónico</label>
+                            <div id="displayCorreo" th:text="${usuario.correoUsuario} ?: 'correo@ejemplo.com'">correo@ejemplo.com</div>
+                            <input type="email" name="correoUsuario" id="inputCorreo"
+                                   th:value="${usuario.correoUsuario}" class="hidden border rounded w-full p-2" required>
+                        </div>
+                        <!-- Teléfono -->
+                        <div>
+                            <label class="font-semibold">Teléfono</label>
+                            <div id="displayTelefono"
+                                 th:text="${usuario.telUsuario != null && !usuario.telUsuario.isEmpty() ? usuario.telUsuario : 'No registrado'}">-</div>
+                            <input type="tel" name="telUsuario" id="inputTelefono"
+                                   th:value="${usuario.telUsuario}" class="hidden border rounded w-full p-2"
+                                   placeholder="Ingresa tu teléfono">
                         </div>
                     </div>
 
-                    <!-- Apellido -->
-                    <div class="info-field">
-                        <div class="field-header">
-                            <div style="flex: 1;">
-                                <div class="field-label">Apellido</div>
-                                <div id="displayApellido" class="field-value" th:text="${usuario.apellido}">Apellido</div>
-                                <input type="text" name="apellido" id="inputApellido"
-                                       th:value="${usuario.apellido}"
-                                       class="field-input hidden" required />
-                            </div>
-                            <i class="fas fa-user-tag field-icon"></i>
-                        </div>
-                    </div>
-
-                    <!-- Correo -->
-                    <div class="info-field">
-                        <div class="field-header">
-                            <div style="flex: 1;">
-                                <div class="field-label">Correo electrónico</div>
-                                <div id="displayCorreo" class="field-value" th:text="${usuario.correo}">correo@ejemplo.com</div>
-                                <input type="email" name="correo" id="inputCorreo"
-                                       th:value="${usuario.correo}"
-                                       class="field-input hidden" required />
-                            </div>
-                            <i class="fas fa-envelope field-icon"></i>
-                        </div>
-                    </div>
-
-                    <!-- Teléfono -->
-                    <div class="info-field">
-                        <div class="field-header">
-                            <div style="flex: 1;">
-                                <div class="field-label">Teléfono</div>
-                                <div id="displayTelefono" class="field-value"
-                                     th:text="${usuario.telefono != null && !usuario.telefono.isEmpty() ? usuario.telefono : 'No registrado'}">-</div>
-                                <input type="tel" name="telefono" id="inputTelefono"
-                                       th:value="${usuario.telefono}"
-                                       class="field-input hidden" placeholder="Ingresa tu teléfono" />
-                            </div>
-                            <i class="fas fa-phone field-icon"></i>
-                        </div>
-                    </div>
-
-                    <!-- Botones de acción -->
-                    <div id="botonesAccionInfo" class="btn-group hidden">
-                        <button type="submit" class="btn-primary">
-                            <i class="fas fa-save"></i>
-                            <span>Guardar cambios</span>
+                    <!-- Botones -->
+                    <div id="botonesAccionInfo" class="mt-4 hidden flex gap-2">
+                        <button type="submit" class="btn btn-success flex items-center">
+                            <i class="fas fa-save mr-2"></i> Guardar cambios
                         </button>
-                        <button type="button" onclick="cancelarEditarInfo()" class="btn-secondary">
-                            <i class="fas fa-times"></i>
-                            <span>Cancelar</span>
+                        <button type="button" class="btn btn-secondary flex items-center" onclick="cancelarEditarInfo()">
+                            <i class="fas fa-times mr-2"></i> Cancelar
                         </button>
                     </div>
                 </form>
 
-                <div class="alert-box alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    <span>Esta información proviene de tu cuenta registrada en el sistema. Los cambios se guardarán en la base de datos.</span>
-                </div>
-
-                <!-- Notificación -->
-                <div th:if="${mensaje != null}"
-                     th:class="${error != null} ? 'alert-box alert-error' : 'alert-box alert-success'">
-                    <i th:class="${error != null} ? 'fas fa-exclamation-circle' : 'fas fa-check-circle'"></i>
+                <!-- Mensajes -->
+                <div th:if="${mensaje != null}" class="mt-4 p-3 rounded"
+                     th:classappend="${error != null} ? ' bg-red-100 text-red-700' : ' bg-green-100 text-green-700'">
+                    <i th:classappend="${error != null} ? ' fas fa-exclamation-circle mr-2' : ' fas fa-check-circle mr-2'"></i>
                     <span th:text="${mensaje}"></span>
                 </div>
             </div>
         </section>
 
-        <!-- Secciones Seguridad, Perfil, Privacidad, Familia y Reporte quedan igual -->
-        <!-- Solo asegúrate de reemplazar ${usuario.nombreUsuario}, ${usuario.correoUsuario}, ${usuario.apellidoUsuario}, ${usuario.telUsuario} -->
-        <!-- por ${usuario.nombre}, ${usuario.correo}, ${usuario.apellido}, ${usuario.telefono} -->
-
+        <!-- Otras secciones -->
+        <section id="seguridad" class="seccion hidden">Seguridad</section>
+        <section id="perfil" class="seccion hidden">Perfil</section>
+        <section id="privacidad" class="seccion hidden">Privacidad</section>
+        <section id="familia" class="seccion hidden">Familia</section>
+        <section id="reporte" class="seccion hidden">Reportes</section>
     </main>
 </div>
 
-<script th:src="@{/JS/perfil.js}"></script>
+<!-- JS -->
+<script>
+    function toggleEditarInfo() {
+        document.getElementById('btnEditarInfo').classList.add('hidden');
+        document.getElementById('botonesAccionInfo').classList.remove('hidden');
+        ['Nombre','Apellido','Correo','Telefono'].forEach(campo=>{
+            document.getElementById('display'+campo).classList.add('hidden');
+            document.getElementById('input'+campo).classList.remove('hidden');
+        });
+    }
+
+    function cancelarEditarInfo() {
+        document.getElementById('btnEditarInfo').classList.remove('hidden');
+        document.getElementById('botonesAccionInfo').classList.add('hidden');
+        ['Nombre','Apellido','Correo','Telefono'].forEach(campo=>{
+            document.getElementById('display'+campo).classList.remove('hidden');
+            document.getElementById('input'+campo).classList.add('hidden');
+        });
+    }
+
+    function mostrarSeccion(seccionId) {
+        document.querySelectorAll('.seccion').forEach(sec=>sec.classList.add('hidden'));
+        const sec = document.getElementById(seccionId);
+        if(sec) sec.classList.remove('hidden');
+    }
+</script>
 </body>
 </html>

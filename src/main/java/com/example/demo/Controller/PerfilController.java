@@ -1,41 +1,32 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Dto.Response.ApiResponse;
-import com.example.demo.Dto.UsuarioDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.Model.Usuario;
+import com.example.demo.Services.UsuarioService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.example.demo.Services.UsuarioService;
-import com.example.demo.Model.Usuario;
-
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
 @Controller
 public class PerfilController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
-
-
-        public PerfilController(UsuarioService usuarioService) {
-            this.usuarioService = usuarioService;
-        }
+    public PerfilController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
     @GetMapping("/perfil")
-    public String mostrarPerfil(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLog");
-
-        if (usuario == null) {
+    public String verPerfil(Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
 
+        // Usuario autenticado
+        String correo = authentication.getName(); // correo del usuario
+        Usuario usuario = usuarioService.buscarPorCorreo(correo);
         model.addAttribute("usuario", usuario);
-        return "perfil"; // nombre de la vista
+        return "perfil";
     }
 
 }
-

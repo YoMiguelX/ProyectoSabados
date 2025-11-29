@@ -1,6 +1,7 @@
 package com.example.demo.Controller.Admin;
 
 
+import com.example.demo.Model.Rol;
 import com.example.demo.Model.Usuario;
 import com.example.demo.Services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,9 @@ public class AdminCRUDController {
 
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute Usuario usuario, RedirectAttributes redirect) {
-        usuario.setRolIdRol(1);
+        Rol rolAdmin = new Rol(); // creas un nuevo rol
+        rolAdmin.setIdRol(1);     // le asignas el ID que corresponde a administrador
+        usuario.setRol(rolAdmin); // ahora sí funciona
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
         usuarioService.guardarUsuario(usuario);
         redirect.addFlashAttribute("success", "Administrador creado correctamente");

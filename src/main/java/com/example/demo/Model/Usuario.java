@@ -1,10 +1,9 @@
 package com.example.demo.Model;
 
-
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
 @Entity
 @Table(name = "usuario")
 public class Usuario extends BaseModel {
@@ -41,7 +40,6 @@ public class Usuario extends BaseModel {
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rol_ID_ROL", referencedColumnName = "ID_ROL", nullable = false)
     private Rol rol;
@@ -49,13 +47,29 @@ public class Usuario extends BaseModel {
     @OneToMany(mappedBy = "usuario")
     private List<Jugador> jugadores;
 
-    // Getters y setters
+    // Getters y Setters manuales
     public Integer getIdUsuario() {
         return idUsuario;
     }
 
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiration() {
+        return resetTokenExpiration;
+    }
+
+    public void setResetTokenExpiration(LocalDateTime resetTokenExpiration) {
+        this.resetTokenExpiration = resetTokenExpiration;
     }
 
     public String getNombreUsuario() {
@@ -114,23 +128,6 @@ public class Usuario extends BaseModel {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public String getResetToken() {
-
-        return resetToken;
-    }
-
-    public void setResetToken(String resetToken) {
-        this.resetToken = resetToken;
-    }
-
-    public LocalDateTime getResetTokenExpiration() {
-        return resetTokenExpiration;
-    }
-
-    public void setResetTokenExpiration(LocalDateTime resetTokenExpiration) {
-        this.resetTokenExpiration = resetTokenExpiration;
-    }
-
     public Rol getRol() {
         return rol;
     }
@@ -145,8 +142,5 @@ public class Usuario extends BaseModel {
 
     public void setJugadores(List<Jugador> jugadores) {
         this.jugadores = jugadores;
-    }
-
-    public void setRolIdRol(int i) {
     }
 }
