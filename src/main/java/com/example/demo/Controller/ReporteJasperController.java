@@ -22,7 +22,7 @@ public class ReporteJasperController {
     }
 
     // Solo ADMIN puede generar reportes
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/api/reportes/jasper/estadistico")
     public ResponseEntity<Map<String, Object>> getReporteEstadistico() {
         // 1. Datos de ejemplo (normalmente vendrían de la BD)

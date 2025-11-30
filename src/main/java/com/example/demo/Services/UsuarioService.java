@@ -210,12 +210,37 @@ public class UsuarioService implements IUsuarioService {
         return null;
     }
 
+
+
     @Override
     public ApiResponse<UsuarioDto> login(String correo, String contrasena) {
-        return null;
+        ApiResponse<UsuarioDto> response = new ApiResponse<>();
+
+        try {
+            Usuario usuario = repo.findByCorreoUsuario(correo)
+                    .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
+
+            if (!passwordEncoder.matches(contrasena, usuario.getContrasena())) {
+                throw new RuntimeException("Credenciales inválidas");
+            }
+
+            // Opcional: generar token si usabas JWT antes
+            // String token = generarToken(usuario);
+
+            UsuarioDto dto = mapearUsuarioAUsuarioDto(usuario);
+            response.setHttpStatusCode(200);
+            response.setMessage("Login exitoso");
+            response.setData(dto);
+
+            return response;
+
+        } catch (Exception ex) {
+            response.setHttpStatusCode(401);
+            response.setMessage(ex.getMessage());
+            response.setData(null);
+            return response;
+        }
     }
-
-
 
 
     @Override
