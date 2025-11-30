@@ -16,14 +16,15 @@ public class PerfilController {
     public PerfilController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
+
     @GetMapping("/perfil")
-    public String verPerfil(Authentication authentication, Model model) {
-        if (authentication == null || !authentication.isAuthenticated()) {
+    public String mostrarPerfil(HttpSession session, Model model) {
+        String correo = (String) session.getAttribute("correo");
+
+        if (correo == null) {
             return "redirect:/login";
         }
 
-        // Usuario autenticado
-        String correo = authentication.getName(); // correo del usuario
         Usuario usuario = usuarioService.buscarPorCorreo(correo);
         model.addAttribute("usuario", usuario);
         return "perfil";

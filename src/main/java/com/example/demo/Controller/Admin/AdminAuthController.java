@@ -30,21 +30,7 @@ public class AdminAuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping("/admin/lista")
-    public String mostrarListaUsuarios(HttpServletResponse response, HttpSession session, Model model) {
-        if (session.getAttribute("usuarioId") == null) {
-            return "redirect:/login";
-        }
 
-        // Evitar caché en el navegador
-        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
-        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
-        response.setHeader("Expires", "0"); // Proxies
-        model.addAttribute("administradores", usuarioService.obtenerTodosLosAdmins());
-        model.addAttribute("usuarios", usuarioService.findAll());
-
-        return "lista"; // tu plantilla
-    }
 
     @GetMapping("/login")
     public String mostrarLogin(Model model) {

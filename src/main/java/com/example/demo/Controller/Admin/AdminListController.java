@@ -36,22 +36,29 @@ public class AdminListController {
 
 
 
-
     @GetMapping("/lista")
-    public String listarUsuarios(FiltroDTO filtros, Model model) {
-        List<Usuario> administradores = usuarioService.filtrar(1,
-                filtros.getNombre(), filtros.getApellido(), filtros.getCorreo(), filtros.getTelefono());
+    public String listarUsuarios(FiltroDTO filtros, HttpSession session, Model model) {
 
-        List<Usuario> usuarios = usuarioService.filtrar(2,
-                filtros.getNombre(), filtros.getApellido(), filtros.getCorreo(), filtros.getTelefono());
+        // Proteger ruta
+        if (session.getAttribute("rol") == null || (int) session.getAttribute("rol") != 1) {
+            return "redirect:/perfil";
+        }
+
+        // Cargar usuarios admin y normales
+        List<Usuario> administradores = usuarioService.filtrar(
+                1, filtros.getNombre(), filtros.getApellido(), filtros.getCorreo(), filtros.getTelefono()
+        );
+
+        List<Usuario> usuarios = usuarioService.filtrar(
+                2, filtros.getNombre(), filtros.getApellido(), filtros.getCorreo(), filtros.getTelefono()
+        );
 
         model.addAttribute("administradores", administradores);
         model.addAttribute("usuarios", usuarios);
         model.addAttribute("filtros", filtros);
 
-        return "admin/lista";
+        return "admin/lista";  // ruta correcta hacia la vista
     }
-
     @GetMapping("/exportar")
     public void exportarExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");

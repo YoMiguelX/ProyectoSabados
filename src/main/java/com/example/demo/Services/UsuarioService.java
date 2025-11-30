@@ -1,6 +1,6 @@
 package com.example.demo.Services;
 
-import com.example.demo.config.JwtUtil;
+
 import com.example.demo.Dto.RegistroUsuarioDto;
 import com.example.demo.Dto.UsuarioDto;
 import com.example.demo.Dto.Response.ApiResponse;
@@ -12,6 +12,7 @@ import com.example.demo.Repository.UsuarioRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 
+import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -37,18 +41,21 @@ public class UsuarioService implements IUsuarioService {
     private final UsuarioRepository repo;
     private final ModelMapper mapper;
 
-    private final JwtUtil jwtUtil;
+
     private final RolRepository rolRepository; // <-- agregado
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
 
     public UsuarioService(
             UsuarioRepository repo,
             ModelMapper mapper,
-            JwtUtil jwtUtil,
+
             RolRepository rolRepository // <-- agregado
     ) {
         this.repo = repo;
         this.mapper = mapper;
-        this.jwtUtil = jwtUtil;
+
         this.rolRepository = rolRepository; // <-- agregado
     }
 
@@ -205,29 +212,11 @@ public class UsuarioService implements IUsuarioService {
 
     @Override
     public ApiResponse<UsuarioDto> login(String correo, String contrasena) {
-        ApiResponse<UsuarioDto> response = new ApiResponse<>();
-        try {
-            Usuario usuario = repo.findByCorreoUsuario(correo)
-                    .filter(u -> passwordEncoder.matches(contrasena, u.getContrasena()))
-
-                    .orElseThrow(() -> new EntityNotFoundException("Credenciales inválidas"));
-
-            UsuarioDto dto = mapearUsuarioAUsuarioDto(usuario);
-
-            String token = jwtUtil.generarToken(usuario.getCorreoUsuario(),
-                    usuario.getRol() != null ? usuario.getRol().getIdRol() : 2);
-
-            response.setHttpStatusCode(HttpStatus.OK.value());
-            response.setMessage("Inicio de sesión exitoso");
-            response.setData(dto);
-            response.setToken(token);
-        } catch (Exception ex) {
-            response.setHttpStatusCode(HttpStatus.UNAUTHORIZED.value());
-            response.setMessage("Error al iniciar sesión: " + ex.getMessage());
-
-        }
-        return response;
+        return null;
     }
+
+
+
 
     @Override
     public Usuario loginWeb(String correo, String contrasena) {
