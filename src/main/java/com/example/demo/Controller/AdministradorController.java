@@ -309,4 +309,11 @@ public class AdministradorController {
 
         return "redirect:/login";
     }
+
+
+//correo
+    @GetMapping("/correo")
+    public String mostrarFormularioCorreo() {
+        return "admin/enviar-correo"; // la vista Thymeleaf
+    }
 }

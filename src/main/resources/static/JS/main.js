@@ -75,3 +75,13 @@ function renderVideos() {
         });
     });
 }
+document.getElementById('bmore')?.addEventListener('click', (e) => {
+   e.preventDefault();
+   document.getElementById('menu').classList.toggle('show');
+});
+
+document.getElementById('bmore2')?.addEventListener('click', (e) => {
+   e.preventDefault();
+   document.getElementById('menu2').classList.toggle('show');
+});
+

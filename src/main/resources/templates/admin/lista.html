@@ -38,6 +38,7 @@
                 <a href="#">Soporte</a>
             </div>
         </div>
+
         <ul>
             <li><a th:href="@{/}"><img th:src="@{/IMG/Shenmi Kappai.png}" width="60"></a></li>
             <li><a href="#" class="link link-hide">Juegos</a></li>
@@ -49,14 +50,25 @@
                 </div>
             </li>
         </ul>
+
         <ul>
-            <li><a th:href="@{/logout}" class="btn">Cerrar sesión</a></li>
-            <li><a th:href="@{/admin/crear}" class="btn">Registrar Admin</a></li>
-            <li><a th:href="@{/jugador}" class="btn">Ver estado del jugador</a></li>
-            <li><a th:href="@{/admin/cambiar-password}" class="btn">Cambiar Contraseña</a></li>
-            <li>
-                <a th:href="@{/admin/exportarExcel}" class="btn btn-futurista">Exportar Datos</a>
+            <li><a th:href="@{/admin/crear}" class="dropdown-item">Registrar Admin</a></li>
+            <li class="more">
+                <a href="#" class="link" id="bmore2">Menú</a>
+
+                <div class="menu" id="menu2" style="right:0; left:auto;">
+                    <a th:href="@{/admin/correo}" class="dropdown-item">
+                        Enviar correo
+                    </a>
+
+                    <a th:href="@{/jugador}" class="dropdown-item">Estado del jugador</a>
+                    <a th:href="@{/admin/cambiar-password}" class="dropdown-item">Cambiar contraseña</a>
+                    <a th:href="@{/admin/exportarExcel}" class="dropdown-item">Exportar Datos</a>
+
+                </div>
             </li>
+
+            <li> <a th:href="@{/logout}" class="dropdown-item">Cerrar sesión</a></li>
         </ul>
     </nav>
 </header>
@@ -145,7 +157,7 @@
                         <i class="fas fa-edit me-1"></i>Editar
                     </a>
                     <a th:href="@{/admin/eliminar/{id}(id=${admin.idUsuario})}" class="btn btn-sm btn-danger">
-                        <i class="fas fa-trash me-1"></i>Eliminar
+                        <i class="fas fa-trash me-1"></i>Desactivar
                     </a>
                 </td>
             </tr>
@@ -419,7 +431,37 @@
             window.location.href = '/login';
         });
     }, 5000); // Cada 5 segundos
-</script>
 
+
+
+</script>
+<script>
+    // --- MENÚ MÓVIL ---
+    document.getElementById('bmenu')?.addEventListener('click', () => {
+        document.getElementById('links').classList.toggle('show');
+    });
+
+    // --- MENÚ 1 ---
+    document.getElementById('bmore')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('menu').classList.toggle('show');
+        document.getElementById('menu2').classList.remove('show');
+    });
+
+    // --- MENÚ 2 (USUARIO ACTUAL) ---
+    document.getElementById('bmore2')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('menu2').classList.toggle('show');
+        document.getElementById('menu').classList.remove('show');
+    });
+
+    // Cerrar menús si el usuario hace clic afuera
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.more')) {
+            document.getElementById('menu').classList.remove('show');
+            document.getElementById('menu2').classList.remove('show');
+        }
+    });
+</script>
 </body>
 </html>
