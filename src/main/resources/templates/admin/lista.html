@@ -52,6 +52,11 @@
         </ul>
 
         <ul>
+            <li>
+                <a href="javascript:void(0)" class="dropdown-item" onclick="generarReporte()">
+                    <i class="fas fa-file-pdf"></i> Generar Reporte PDF
+                </a>
+            </li>
             <li><a th:href="@{/admin/crear}" class="dropdown-item">Registrar Admin</a></li>
             <li class="more">
                 <a href="#" class="link" id="bmore2">Menú</a>
@@ -462,6 +467,28 @@
             document.getElementById('menu2').classList.remove('show');
         }
     });
+</script>
+
+<script>
+    function generarReporte() {
+        fetch("/api/reportes/jasper/estadistico")
+            .then(r => r.json())
+            .then(data => {
+                const byteCharacters = atob(data.base64);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: "application/pdf" });
+
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = data.nombre || "reporte.pdf";
+                link.click();
+            })
+            .catch(err => alert("Error al generar reporte: " + err));
+    }
 </script>
 </body>
 </html>

@@ -316,4 +316,10 @@ public class AdministradorController {
     public String mostrarFormularioCorreo() {
         return "admin/enviar-correo"; // la vista Thymeleaf
     }
+//reporte pdf
+    @GetMapping("/reporte-estadistico")
+    public String mostrarReporteEstadistico() {
+        return "admin/reporte-estadistico";
+        // busca en src/main/resources/templates/admin/reporte-estadistico.html
+    }
 }
