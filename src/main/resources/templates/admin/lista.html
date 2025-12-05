@@ -388,6 +388,38 @@
       document.getElementById('menu').classList.toggle('show');
     });
 </script>
+<!-- Script para prevenir acceso después de cerrar sesión -->
+<script>
+    // Prevenir que el navegador use caché al volver atrás
+    window.onpageshow = function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    };
+
+    // Deshabilitar el botón atrás del navegador
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
+
+    // Verificar sesión periódicamente
+    setInterval(function() {
+        fetch('/admin/check-session', {
+            method: 'GET',
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (response.status === 401 || response.status === 403) {
+                window.location.href = '/login?expired=true';
+            }
+        })
+        .catch(() => {
+            // Si hay error de red, redirigir al login
+            window.location.href = '/login';
+        });
+    }, 5000); // Cada 5 segundos
+</script>
 
 </body>
 </html>

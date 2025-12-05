@@ -16,6 +16,7 @@ public class LoginController {
     public LoginController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
+
     @PostMapping("/login")
     public String login(@RequestParam String correo,
                         @RequestParam String contrasena,
@@ -25,6 +26,10 @@ public class LoginController {
         try {
             Usuario usuario = usuarioService.loginWeb(correo, contrasena);
 
+            // Guardar el objeto completo en la sesión
+            session.setAttribute("usuario", usuario);
+
+            // También guardar los datos individuales por compatibilidad
             session.setAttribute("usuarioId", usuario.getIdUsuario());
             session.setAttribute("correo", usuario.getCorreoUsuario());
             session.setAttribute("rol", usuario.getRol().getIdRol());
@@ -32,7 +37,7 @@ public class LoginController {
             if (usuario.getRol().getIdRol() == 1) {
                 return "redirect:/admin/lista";
             } else {
-                return "redirect:/perfil";
+                return "redirect:/usuario/perfil"; // ← Cambiar aquí
             }
 
         } catch (Exception e) {
@@ -40,5 +45,4 @@ public class LoginController {
             return "login";
         }
     }
-
 }

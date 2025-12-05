@@ -55,10 +55,14 @@ public class AdministradorController {
 
     // ===== LISTAR =====
     @GetMapping("/lista")
-    public String listarUsuarios(FiltroDTO filtros, Model model, HttpSession session) {
+    public String listarUsuarios(FiltroDTO filtros, Model model, HttpSession session, HttpServletResponse response) {
         if (session.getAttribute("usuarioId") == null) {
             return "redirect:/login"; // si no hay sesión, redirige al login
         }
+
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        response.setDateHeader("Expires", 0); // Proxies
 
         List<Usuario> administradores = usuarioService.filtrar(1,
                 filtros.getNombre(), filtros.getApellido(), filtros.getCorreo(), filtros.getTelefono());
@@ -285,6 +289,24 @@ public class AdministradorController {
 
         return tieneMayuscula && tieneMinuscula && tieneNumero && tieneEspecial;
     }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
 
+        // eliminar cookie JSESSIONID del navegador
+        Cookie cookie = new Cookie("JSESSIONID", "");
+        cookie.setPath(request.getContextPath() == null ? "/" : request.getContextPath());
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
 
+        // cabeceras extra de seguridad (por si)
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+
+        return "redirect:/login";
+    }
 }

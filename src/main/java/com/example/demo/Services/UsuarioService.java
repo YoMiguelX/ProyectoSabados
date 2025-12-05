@@ -344,4 +344,19 @@ public class UsuarioService implements IUsuarioService {
         return repo.findById(id).orElse(null);
     }
 
+
+    public void cambiarPassword(Integer idUsuario, String passwordActual, String passwordNueva) {
+        Usuario usuario = repo.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Verificar que la contraseña actual sea correcta
+        if (!passwordEncoder.matches(passwordActual, usuario.getContrasena())) {
+            throw new RuntimeException("La contraseña actual es incorrecta");
+        }
+
+        // Encriptar y guardar la nueva contraseña
+        usuario.setContrasena(passwordEncoder.encode(passwordNueva));
+        repo.save(usuario);
+    }
+
 }

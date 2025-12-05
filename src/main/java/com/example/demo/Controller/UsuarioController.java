@@ -6,6 +6,9 @@ import com.example.demo.Dto.UsuarioDto;
 import com.example.demo.Interface.IUsuarioService;
 import com.example.demo.Model.Usuario;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,8 +49,24 @@ public class UsuarioController {
 
 
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        // eliminar cookie JSESSIONID del navegador
+        Cookie cookie = new Cookie("JSESSIONID", "");
+        cookie.setPath(request.getContextPath() == null ? "/" : request.getContextPath());
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        // cabeceras extra de seguridad (por si)
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+
         return "redirect:/login";
     }
+
 }

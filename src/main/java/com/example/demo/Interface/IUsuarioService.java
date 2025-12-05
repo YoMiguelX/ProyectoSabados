@@ -41,4 +41,6 @@ public interface IUsuarioService {
     List<Usuario> obtenerTodosLosUsuarios();
 
 
+    // En IUsuarioService.java, agrega:
+    void cambiarPassword(Integer idUsuario, String passwordActual, String passwordNueva);
 }
