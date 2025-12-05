@@ -23,6 +23,9 @@ public interface IUsuarioService {
     ApiResponse<UsuarioDto> registrarUsuario(RegistroUsuarioDto dto);
 
     ApiResponse<UsuarioDto> update(Integer id, UsuarioDto dto);
+
+    ApiResponse<UsuarioDto> actualizarUsuario(UsuarioDto dto);
+
     void delete(Integer id);
     ApiResponse<UsuarioDto> verificarUsuario(String correo, String contrasena);
     ApiResponse<UsuarioDto> login(String correo, String contrasena);
@@ -32,4 +35,10 @@ public interface IUsuarioService {
     Usuario guardarUsuario(Usuario usuario);
 
     List<Usuario> filtrar(Integer rol, String nombre, String apellido, String correo, String telefono);
+
+    Usuario crearAdministrador(Usuario usuario);
+
+    List<Usuario> obtenerTodosLosUsuarios();
+
+
 }

@@ -1,6 +1,5 @@
 package com.example.demo.Services;
 
-
 import com.example.demo.Dto.RegistroUsuarioDto;
 import com.example.demo.Dto.UsuarioDto;
 import com.example.demo.Dto.Response.ApiResponse;
@@ -12,51 +11,37 @@ import com.example.demo.Repository.UsuarioRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 
-import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class UsuarioService implements IUsuarioService {
+
     @Autowired
-
-
-
     private PasswordEncoder passwordEncoder;
 
     private final UsuarioRepository repo;
     private final ModelMapper mapper;
 
-
-    private final RolRepository rolRepository; // <-- agregado
-    public PasswordEncoder getPasswordEncoder() {
-        return passwordEncoder;
-    }
+    private final RolRepository rolRepository;
 
     public UsuarioService(
             UsuarioRepository repo,
             ModelMapper mapper,
-
-            RolRepository rolRepository // <-- agregado
+            RolRepository rolRepository
     ) {
         this.repo = repo;
         this.mapper = mapper;
-
-        this.rolRepository = rolRepository; // <-- agregado
+        this.rolRepository = rolRepository;
     }
 
     @Override
@@ -85,9 +70,8 @@ public class UsuarioService implements IUsuarioService {
 
     @Override
     public List<Usuario> obtenerTodosLosAdmins() {
-        return repo.findByRol_IdRol(1); // 1 = Admin
+        return repo.findByRol_IdRol(1);
     }
-
 
     @Override
     public ApiResponse<UsuarioDto> findById(Integer id) {
@@ -109,15 +93,15 @@ public class UsuarioService implements IUsuarioService {
         return response;
     }
 
-
-
+    // ------------------------------
+    // REGISTRO
+    // ------------------------------
     @Transactional
     @Override
     public ApiResponse<UsuarioDto> registrarUsuario(RegistroUsuarioDto dto) {
         ApiResponse<UsuarioDto> response = new ApiResponse<>();
 
         try {
-            // Validar correo
             if (repo.findByCorreoUsuario(dto.getCorreo()).isPresent()) {
                 throw new RuntimeException("Ya existe un usuario con ese correo");
             }
@@ -131,22 +115,14 @@ public class UsuarioService implements IUsuarioService {
             usuario.setEstadoUsuario("Activo");
             usuario.setFechaCreacion(LocalDateTime.now());
 
-            // ASIGNAR SIEMPRE ROL 2 A USUARIOS NORMALES
             Rol rol = rolRepository.findById(2)
                     .orElseThrow(() -> new RuntimeException("El rol 2 (Usuario normal) no existe"));
 
             usuario.setRol(rol);
 
             Usuario saved = repo.save(usuario);
-            UsuarioDto dtoMapped = new UsuarioDto();
-            dtoMapped.setId(saved.getIdUsuario());
-            dtoMapped.setNombre(saved.getNombreUsuario());
-            dtoMapped.setApellido(saved.getApellidoUsuario());
-            dtoMapped.setCorreo(saved.getCorreoUsuario());
-            dtoMapped.setTelefono(saved.getTelUsuario());
-            dtoMapped.setEstado(saved.getEstadoUsuario());
-            dtoMapped.setRolId(saved.getRol().getIdRol());
 
+            UsuarioDto dtoMapped = mapper.map(saved, UsuarioDto.class);
 
             response.setHttpStatusCode(HttpStatus.CREATED.value());
             response.setMessage("Usuario registrado exitosamente");
@@ -161,48 +137,71 @@ public class UsuarioService implements IUsuarioService {
     }
 
 
-    @Transactional
+    // ------------------------------
+    // UPDATE GENERICO CORRECTO
+    // ------------------------------
     @Override
     public ApiResponse<UsuarioDto> update(Integer id, UsuarioDto dto) {
-        ApiResponse<UsuarioDto> response = new ApiResponse<>();
-        try {
-            Usuario usuario = repo.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
-            usuario.setNombreUsuario(dto.getNombre());
-            usuario.setApellidoUsuario(dto.getApellido());
-            usuario.setCorreoUsuario(dto.getCorreo());
-            usuario.setTelUsuario(dto.getTelefono());
-            usuario.setEstadoUsuario(dto.getEstado());
+        Usuario usuario = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            Usuario updated = repo.save(usuario);
-            UsuarioDto mapped = mapper.map(updated, UsuarioDto.class);
+        usuario.setNombreUsuario(dto.getNombre());
+        usuario.setApellidoUsuario(dto.getApellido());
+        usuario.setCorreoUsuario(dto.getCorreo());
+        usuario.setTelUsuario(dto.getTelefono());
+        usuario.setEstadoUsuario(dto.getEstado());
 
-            response.setHttpStatusCode(HttpStatus.OK.value());
-            response.setMessage("Usuario actualizado correctamente");
-            response.setData(mapped);
-        } catch (EntityNotFoundException ex) {
-            response.setHttpStatusCode(HttpStatus.NOT_FOUND.value());
-            response.setMessage(ex.getMessage());
-        } catch (Exception ex) {
-            response.setHttpStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("Error al actualizar usuario: " + ex.getMessage());
-        }
-        return response;
+        Rol rol = rolRepository.findById(dto.getRolId())
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+        usuario.setRol(rol);
+
+        repo.save(usuario);
+
+        return new ApiResponse<>(
+                200,
+                "Usuario actualizado correctamente",
+                mapper.map(usuario, UsuarioDto.class)
+        );
     }
 
+
+    // ------------------------------
+    // UPDATE (ADMIN)
+    // ------------------------------
+    @Override
+    public ApiResponse<UsuarioDto> actualizarUsuario(UsuarioDto dto) {
+
+        Usuario usuario = repo.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        usuario.setNombreUsuario(dto.getNombre());
+        usuario.setApellidoUsuario(dto.getApellido());
+        usuario.setCorreoUsuario(dto.getCorreo());
+        usuario.setTelUsuario(dto.getTelefono());
+        usuario.setEstadoUsuario(dto.getEstado());
+
+        Rol rol = rolRepository.findById(dto.getRolId())
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        usuario.setRol(rol);
+        repo.save(usuario);
+
+        return new ApiResponse<>(200, "Usuario actualizado correctamente", dto);
+    }
+
+
+    // ------------------------------
+    // DELETE LÓGICO
+    // ------------------------------
     @Transactional
     @Override
     public void delete(Integer id) {
-        try {
-            Usuario usuario = repo.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
+        Usuario usuario = repo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
-            usuario.setEstadoUsuario("Inactivo");
-            repo.save(usuario);
-        } catch (Exception ex) {
-            System.err.println("Error al eliminar usuario: " + ex.getMessage());
-        }
+        usuario.setEstadoUsuario("Inactivo");
+        repo.save(usuario);
     }
 
     @Override
@@ -211,7 +210,9 @@ public class UsuarioService implements IUsuarioService {
     }
 
 
-
+    // ------------------------------
+    // LOGIN
+    // ------------------------------
     @Override
     public ApiResponse<UsuarioDto> login(String correo, String contrasena) {
         ApiResponse<UsuarioDto> response = new ApiResponse<>();
@@ -224,31 +225,24 @@ public class UsuarioService implements IUsuarioService {
                 throw new RuntimeException("Credenciales inválidas");
             }
 
-            // Opcional: generar token si usabas JWT antes
-            // String token = generarToken(usuario);
-
             UsuarioDto dto = mapearUsuarioAUsuarioDto(usuario);
             response.setHttpStatusCode(200);
             response.setMessage("Login exitoso");
             response.setData(dto);
 
-            return response;
-
         } catch (Exception ex) {
             response.setHttpStatusCode(401);
             response.setMessage(ex.getMessage());
-            response.setData(null);
-            return response;
         }
-    }
 
+        return response;
+    }
 
     @Override
     public Usuario loginWeb(String correo, String contrasena) {
         Usuario usuario = repo.findByCorreoUsuario(correo)
                 .orElseThrow(() -> new EntityNotFoundException("Credenciales inválidas"));
 
-        // Usar passwordEncoder para comparar
         if (!passwordEncoder.matches(contrasena, usuario.getContrasena())) {
             throw new EntityNotFoundException("Credenciales inválidas");
         }
@@ -256,6 +250,10 @@ public class UsuarioService implements IUsuarioService {
         return usuario;
     }
 
+
+    // ------------------------------
+    // MAPEO DTO
+    // ------------------------------
     public UsuarioDto mapearUsuarioAUsuarioDto(Usuario usuario) {
         return new UsuarioDto(
                 usuario.getIdUsuario(),
@@ -267,6 +265,7 @@ public class UsuarioService implements IUsuarioService {
                 usuario.getRol() != null ? usuario.getRol().getIdRol() : null
         );
     }
+
     @PostConstruct
     public void configurarMapper() {
         mapper.typeMap(Usuario.class, UsuarioDto.class).addMappings(m -> {
@@ -274,14 +273,44 @@ public class UsuarioService implements IUsuarioService {
             m.map(Usuario::getApellidoUsuario, UsuarioDto::setApellido);
             m.map(Usuario::getCorreoUsuario, UsuarioDto::setCorreo);
             m.map(Usuario::getTelUsuario, UsuarioDto::setTelefono);
-            m.map(src -> src.getRol() != null ? src.getRol().getIdRol() : null, UsuarioDto::setRolId);
+            m.map(src -> src.getRol() != null ? src.getRol().getIdRol() : null,
+                    UsuarioDto::setRolId);
         });
+    }
+
+
+    // ------------------------------
+    // OTROS
+    // ------------------------------
+    @Override
+    public Usuario crearAdministrador(Usuario usuario) {
+
+        Rol rolAdmin = rolRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("No existe el rol Administrador (ID 1)."));
+
+        usuario.setRol(rolAdmin);
+
+        if (!usuario.getContrasena().startsWith("$2a")) {
+            usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+        }
+
+        usuario.setEstadoUsuario("Activo");
+        usuario.setFechaCreacion(LocalDateTime.now());
+
+        return repo.save(usuario);
+    }
+
+    @Override
+    public List<Usuario> obtenerTodosLosUsuarios() {
+        return repo.findAll();
     }
 
 
     public Usuario buscarPorCorreo(String correo) {
         return repo.findByCorreoUsuario(correo).orElse(null);
     }
+
+
     public String generarToken(Usuario usuario) {
         String token = UUID.randomUUID().toString();
         usuario.setResetToken(token);
@@ -289,9 +318,11 @@ public class UsuarioService implements IUsuarioService {
         repo.save(usuario);
         return token;
     }
+
     public Usuario buscarPorToken(String token) {
         return repo.findByResetToken(token).orElse(null);
     }
+
     public Usuario guardarUsuario(Usuario usuario) {
         return repo.save(usuario);
     }
@@ -305,13 +336,12 @@ public class UsuarioService implements IUsuarioService {
         Usuario usuario = repo.findByCorreoUsuario(correo)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        UsuarioDto dto = new UsuarioDto();
-        dto.setId(usuario.getIdUsuario());
-        dto.setNombre(usuario.getNombreUsuario());
-        dto.setCorreo(usuario.getCorreoUsuario());
-        dto.setApellido(usuario.getApellidoUsuario());
+        UsuarioDto dto = mapper.map(usuario, UsuarioDto.class);
 
         return new ApiResponse<>(dto);
+    }
+    public Usuario buscarPorIdEntity(Integer id) {
+        return repo.findById(id).orElse(null);
     }
 
 }
