@@ -53,9 +53,8 @@
 
         <ul>
             <li>
-                <a href="javascript:void(0)" class="dropdown-item" onclick="generarReporte()">
-                    <i class="fas fa-file-pdf"></i> Generar Reporte PDF
-                </a>
+                <a th:href="@{/admin/cambiar-password}" class="dropdown-item">Cambiar contraseña</a>
+
             </li>
             <li><a th:href="@{/admin/crear}" class="dropdown-item">Registrar Admin</a></li>
             <li class="more">
@@ -65,9 +64,11 @@
                     <a th:href="@{/admin/correo}" class="dropdown-item">
                         Enviar correo
                     </a>
-
+                    <a href="javascript:void(0)" class="dropdown-item" onclick="generarReporte()">
+                        <i class="fas fa-file-pdf"></i> Generar Reporte PDF
+                    </a>
                     <a th:href="@{/jugador}" class="dropdown-item">Estado del jugador</a>
-                    <a th:href="@{/admin/cambiar-password}" class="dropdown-item">Cambiar contraseña</a>
+
                     <a th:href="@{/admin/exportarExcel}" class="dropdown-item">Exportar Datos</a>
 
                 </div>
@@ -196,7 +197,7 @@
                 <td th:text="${user.correoUsuario}"></td>
                 <td>
                     <a th:href="@{/admin/eliminar/{id}(id=${user.idUsuario})}" class="btn btn-sm btn-danger">
-                        <i class="fas fa-trash me-1"></i>Eliminar
+                        <i class="fas fa-trash me-1"></i>Desactivar
                     </a>
                 </td>
             </tr>

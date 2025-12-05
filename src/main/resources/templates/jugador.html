@@ -237,216 +237,208 @@
 
 <body th:style="'background: url(' + @{/IMG/fondo.jpg} + ') no-repeat center/cover; padding-top: 70px'">
 
-  <!-- NAVBAR -->
-  <div th:replace="~{plantilla/navbar :: navbar}"></div>
+<!-- NAVBAR -->
+<div th:replace="~{plantilla/navbar :: navbar}"></div>
 
-  <!-- CONTENIDO -->
-  <div class="container mt-5 text-white">
+<!-- CONTENIDO -->
+<div class="container mt-5 text-white">
 
     <!-- Encabezado -->
     <div class="text-center bg-dark bg-opacity-75 p-4 rounded mb-4">
-      <h1><i class="fas fa-gamepad me-2"></i>Estado de Jugadores</h1>
-      <p>Monitor del progreso y actividad de los jugadores en Shenmi</p>
+        <h1><i class="fas fa-gamepad me-2"></i>Estado de Jugadores</h1>
+        <p>Monitor del progreso y actividad de los jugadores en Shenmi</p>
     </div>
 
     <!-- Estadísticas generales -->
     <div class="stats-container">
-      <div class="stat-card">
-        <div class="stat-number" th:text="${totalJugadores ?: 0}">0</div>
-        <div class="stat-label">Total Jugadores</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" th:text="${jugadoresActivos ?: 0}">0</div>
-        <div class="stat-label">Activos (7 días)</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" th:text="${progresoPromedio ?: 0} + '%'">0%</div>
-        <div class="stat-label">Progreso Promedio</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" th:text="${nivelesCompletados ?: 0}">0</div>
-        <div class="stat-label">Niveles Completados</div>
-      </div>
+        <div class="stat-card">
+            <div class="stat-number" th:text="${totalJugadores ?: 0}">0</div>
+            <div class="stat-label">Total Jugadores</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" th:text="${jugadoresActivos ?: 0}">0</div>
+            <div class="stat-label">Activos (7 días)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" th:text="${progresoPromedio ?: 0} + '%'">0%</div>
+            <div class="stat-label">Progreso Promedio</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" th:text="${nivelesCompletados ?: 0}">0</div>
+            <div class="stat-label">Niveles Completados</div>
+        </div>
     </div>
 
     <!-- Filtros -->
     <div class="filtros-container">
-      <h5 class="text-white mb-3">
-        <i class="fas fa-filter me-2"></i>Filtros de Búsqueda
-      </h5>
-      <form th:action="@{/jugador}" method="get" id="filtrosForm">
-        <div class="row">
-          <div class="col-md-3 mb-3">
-            <input type="text" name="nombreJugador" th:value="${param.nombreJugador}" 
-                   class="form-control filtro-input" placeholder="Buscar por nombre de jugador...">
-          </div>
-          <div class="col-md-3 mb-3">
-            <input type="text" name="nombreUsuario" th:value="${param.nombreUsuario}" 
-                   class="form-control filtro-input" placeholder="Buscar por usuario...">
-          </div>
-          <div class="col-md-3 mb-3">
-            <select name="mundo" th:value="${param.mundo}" class="form-control filtro-input">
-              <option value="">Todos los mundos</option>
-              <option th:each="mundo : ${mundos}" 
-                      th:value="${mundo.NOMBRE_MUNDO}" 
-                      th:text="${mundo.NOMBRE_MUNDO}"
-                      th:selected="${param.mundo == mundo.NOMBRE_MUNDO}">
-              </option>
-            </select>
-          </div>
-          <div class="col-md-3 mb-3">
-            <select name="estado" th:value="${param.estado}" class="form-control filtro-input">
-              <option value="">Estado de conexión</option>
-              <option value="activo" th:selected="${param.estado == 'activo'}">Activos (últimos 7 días)</option>
-              <option value="inactivo" th:selected="${param.estado == 'inactivo'}">Inactivos (7-30 días)</option>
-              <option value="desconectado" th:selected="${param.estado == 'desconectado'}">Desconectados (+30 días)</option>
-            </select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-3 mb-3">
-            <select name="size" th:value="${param.size}" class="form-control filtro-input">
-              <option value="6" th:selected="${param.size == '6'}">6 por página</option>
-              <option value="12" th:selected="${param.size == '12' or param.size == null}">12 por página</option>
-              <option value="24" th:selected="${param.size == '24'}">24 por página</option>
-              <option value="48" th:selected="${param.size == '48'}">48 por página</option>
-            </select>
-          </div>
-          <div class="col-md-3 mb-3">
-            <button type="submit" class="btn btn-success me-2">
-              <i class="fas fa-search me-1"></i>Filtrar
-            </button>
-            <a th:href="@{/jugador}" class="btn btn-outline-light">
-              <i class="fas fa-eraser me-1"></i>Limpiar
-            </a>
-          </div>
-        </div>
-      </form>
+        <h5 class="text-white mb-3">
+            <i class="fas fa-filter me-2"></i>Filtros de Búsqueda
+        </h5>
+        <form th:action="@{/jugador}" method="get" id="filtrosForm">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <input type="text" name="nombreJugador" th:value="${param.nombreJugador}"
+                           class="form-control filtro-input" placeholder="Buscar por nombre de jugador...">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <input type="text" name="nombreUsuario" th:value="${param.nombreUsuario}"
+                           class="form-control filtro-input" placeholder="Buscar por usuario...">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <select name="mundo" th:value="${param.mundo}" class="form-control filtro-input">
+                        <option value="">Todos los mundos</option>
+                        <option th:each="mundo : ${mundos}"
+                                th:value="${mundo.nombre}"
+                                th:text="${mundo.nombre}"
+                                th:selected="${param.mundo == mundo.nombre}">
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <select name="estado" th:value="${param.estado}" class="form-control filtro-input">
+                        <option value="">Estado de conexión</option>
+                        <option value="activo" th:selected="${param.estado == 'activo'}">Activos (últimos 7 días)</option>
+                        <option value="inactivo" th:selected="${param.estado == 'inactivo'}">Inactivos (7-30 días)</option>
+                        <option value="desconectado" th:selected="${param.estado == 'desconectado'}">Desconectados (+30 días)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <select name="size" th:value="${param.size}" class="form-control filtro-input">
+                        <option value="6" th:selected="${param.size == '6'}">6 por página</option>
+                        <option value="12" th:selected="${param.size == '12' or param.size == null}">12 por página</option>
+                        <option value="24" th:selected="${param.size == '24'}">24 por página</option>
+                        <option value="48" th:selected="${param.size == '48'}">48 por página</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <button type="submit" class="btn btn-success me-2">
+                        <i class="fas fa-search me-1"></i>Filtrar
+                    </button>
+                    <a th:href="@{/jugador}" class="btn btn-outline-light">
+                        <i class="fas fa-eraser me-1"></i>Limpiar
+                    </a>
+                    <a th:href="@{/admin/lista}"><i class="fas fa-users-cog me-1"></i>Volver al crud</a>
+                </div>
+            </div>
+        </form>
     </div>
 
     <!-- Grid de jugadores -->
     <div class="row" th:if="${jugadores != null and !jugadores.empty}">
-      <div class="col-md-6 col-lg-4 mb-4" th:each="jugador : ${jugadores}">
-        <div class="jugador-card">
-          <div class="jugador-nombre">
-            <i class="fas fa-user-circle me-2"></i>
-            <span th:text="${jugador.NOMBRE}">Nombre Jugador</span>
-          </div>
-          <div class="jugador-usuario">
-            @<span th:text="${jugador.usuario?.NOMBRE_USUARIO + ' ' + jugador.usuario?.APELLIDO_USUARIO}">Usuario</span>
-          </div>
-          
-          <div class="info-item">
-            <span class="info-label"><i class="fas fa-trophy me-1"></i>Nivel:</span>
-            <span class="nivel-badge" 
-                  th:text="${jugador.progreso?.niveles?.NOMBRE_NIVEL ?: 'Sin nivel'}">
-              Nivel
-            </span>
-          </div>
-          
-          <div class="info-item">
-            <span class="info-label"><i class="fas fa-globe me-1"></i>Mundo:</span>
-            <span class="mundo-badge" 
-                  th:text="${jugador.progreso?.niveles?.mundos?.NOMBRE_MUNDO ?: 'Sin mundo'}">
-              Mundo
-            </span>
-          </div>
-          
-          <div class="info-item">
-            <span class="info-label"><i class="fas fa-calendar me-1"></i>Registro:</span>
-            <span class="info-value" 
-                  th:text="${#temporals.format(jugador.FECHA_REGISTRO, 'dd/MM/yyyy')}">
-              Fecha
-            </span>
-          </div>
-          
-          <div class="info-item">
-            <span class="info-label"><i class="fas fa-clock me-1"></i>Conexión:</span>
-            <span class="info-value" 
-                  th:classappend="${T(java.time.temporal.ChronoUnit).DAYS.between(jugador.ULTIMA_CONEXION, T(java.time.LocalDate).now()) <= 7} ? 'conexion-activa' : (${T(java.time.temporal.ChronoUnit).DAYS.between(jugador.ULTIMA_CONEXION, T(java.time.LocalDate).now()) <= 30} ? 'conexion-inactiva' : 'conexion-desconectado')"
-                  th:text="${#temporals.format(jugador.ULTIMA_CONEXION, 'dd/MM/yyyy')}">
+        <div class="col-md-6 col-lg-4 mb-4" th:each="jugador : ${jugadores}">
+            <div class="jugador-card">
+                <div class="jugador-nombre">
+                    <i class="fas fa-user-circle me-2"></i>
+                    <span th:text="${jugador.nombre}">Nombre Jugador</span>
+                </div>
+                <div class="jugador-usuario">
+                    @<span th:text="${jugador.usuario?.nombreUsuario + ' ' + jugador.usuario?.apellidoUsuario}">Usuario</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-trophy me-1"></i>Nivel:</span>
+                    <span class="nivel-badge" th:text="${jugador.progreso?.nivel?.nombreNivel ?: 'Sin nivel'}">Nivel</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-globe me-1"></i>Mundo:</span>
+                    <span class="mundo-badge" th:text="${jugador.progreso?.nivel?.mundo?.nombre ?: 'Sin mundo'}">Mundo</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-calendar me-1"></i>Registro:</span>
+                    <span class="info-value" th:text="${#temporals.format(jugador.fechaRegistro, 'dd/MM/yyyy')}">Fecha</span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-clock me-1"></i>Conexión:</span>
+                    <span class="info-value"
+                          th:classappend="${T(java.time.temporal.ChronoUnit).DAYS.between(jugador.ultimaConexion, T(java.time.LocalDate).now()) <= 7} ? 'conexion-activa' : (${T(java.time.temporal.ChronoUnit).DAYS.between(jugador.ultimaConexion, T(java.time.LocalDate).now()) <= 30} ? 'conexion-inactiva' : 'conexion-desconectado')"
+                          th:text="${#temporals.format(jugador.ultimaConexion, 'dd/MM/yyyy')}">
               Última conexión
             </span>
-          </div>
-          
-          <div class="info-item">
-            <span class="info-label"><i class="fas fa-hourglass-half me-1"></i>Tiempo:</span>
-            <span class="info-value" 
-                  th:text="${jugador.progreso?.TIEMPO_JUGADO ?: 0} + 'h jugadas'">
-              Tiempo
-            </span>
-          </div>
-          
-          <div class="progreso-container">
-            <div class="progreso-label">
-              <i class="fas fa-chart-line me-1"></i>Progreso del Nivel
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label"><i class="fas fa-hourglass-half me-1"></i>Tiempo:</span>
+                    <span class="info-value" th:text="${jugador.progreso?.tiempoJugado ?: 0} + 'h jugadas'">Tiempo</span>
+                </div>
+
+                <div class="progreso-container">
+                    <div class="progreso-label">
+                        <i class="fas fa-chart-line me-1"></i>Progreso del Nivel
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar"
+                             th:style="'width: ' + ${jugador.progreso != null ? (jugador.progreso.puntajeNivel * 100 / jugador.progreso.nivel.puntajeMaximo) : 0} + '%'">
+                        </div>
+                    </div>
+                    <div class="progreso-texto">
+                        <span th:text="${jugador.progreso != null ? T(java.lang.Math).round(jugador.progreso.puntajeNivel * 100.0 / jugador.progreso.nivel.puntajeMaximo) : 0}">0</span>%
+                        (<span th:text="${jugador.progreso?.puntajeNivel ?: 0}">0</span>/<span th:text="${jugador.progreso?.nivel?.puntajeMaximo ?: 100}">100</span> pts)
+                    </div>
+                </div>
             </div>
-            <div class="progress">
-              <div class="progress-bar" 
-                   th:style="'width: ' + ${jugador.progreso != null ? (jugador.progreso.PUNTAJE_NIVEL * 100 / jugador.progreso.niveles.PUNTAJE_MAXIMO) : 0} + '%'">
-              </div>
-            </div>
-            <div class="progreso-texto">
-              <span th:text="${jugador.progreso != null ? T(java.lang.Math).round(jugador.progreso.PUNTAJE_NIVEL * 100.0 / jugador.progreso.niveles.PUNTAJE_MAXIMO) : 0}">0</span>% 
-              (<span th:text="${jugador.progreso?.PUNTAJE_NIVEL ?: 0}">0</span>/<span th:text="${jugador.progreso?.niveles?.PUNTAJE_MAXIMO ?: 100}">100</span> pts)
-            </div>
-          </div>
         </div>
-      </div>
     </div>
+
 
     <!-- Mensaje si no hay jugadores -->
     <div th:if="${jugadores == null or jugadores.empty}" class="text-center py-5">
-      <i class="fas fa-users fa-3x text-muted mb-3"></i>
-      <h4 class="text-muted">No se encontraron jugadores</h4>
-      <p class="text-muted">
-        <span th:if="${param.nombreJugador != null or param.nombreUsuario != null or param.mundo != null or param.estado != null}">
-          Ajusta los filtros o 
-        </span>
-        verifica que existan jugadores registrados.
-      </p>
+        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+        <h4 class="text-muted">No se encontraron jugadores</h4>
+        <p class="text-muted">
+          <span th:if="${param.nombreJugador != null or param.nombreUsuario != null or param.mundo != null or param.estado != null}">
+            Ajusta los filtros o
+          </span>
+            verifica que existan jugadores registrados.
+        </p>
     </div>
 
     <!-- Paginación -->
     <div th:if="${page != null}" class="d-flex justify-content-between align-items-center mt-4">
-      <div class="page-info">
-        Mostrando <span th:text="${page.number * page.size + 1}">1</span> - 
-        <span th:text="${T(java.lang.Math).min((page.number + 1) * page.size, page.totalElements)}">12</span> de 
-        <span th:text="${page.totalElements}">0</span> jugadores
-      </div>
-      
-      <nav th:if="${page.totalPages > 1}">
-        <ul class="pagination pagination-sm mb-0">
-          <!-- Botón anterior -->
-          <li th:classappend="${!page.hasPrevious()} ? 'disabled' : ''" class="page-item">
-            <a class="page-link" 
-               th:href="${page.hasPrevious()} ? @{/jugador(page=${page.number - 1}, size=${page.size}, nombreJugador=${param.nombreJugador}, nombreUsuario=${param.nombreUsuario}, mundo=${param.mundo}, estado=${param.estado})} : 'javascript:void(0)'">
-              Anterior
-            </a>
-          </li>
-          
-          <!-- Números de página -->
-          <li th:each="pageNum : ${#numbers.sequence(T(java.lang.Math).max(0, page.number - 2), T(java.lang.Math).min(page.totalPages - 1, page.number + 2))}"
-              th:classappend="${pageNum == page.number} ? 'active' : ''" 
-              class="page-item">
-            <a class="page-link" 
-               th:href="@{/jugador(page=${pageNum}, size=${page.size}, nombreJugador=${param.nombreJugador}, nombreUsuario=${param.nombreUsuario}, mundo=${param.mundo}, estado=${param.estado})}"
-               th:text="${pageNum + 1}">
-              1
-            </a>
-          </li>
-          
-          <!-- Botón siguiente -->
-          <li th:classappend="${!page.hasNext()} ? 'disabled' : ''" class="page-item">
-            <a class="page-link" 
-               th:href="${page.hasNext()} ? @{/jugador(page=${page.number + 1}, size=${page.size}, nombreJugador=${param.nombreJugador}, nombreUsuario=${param.nombreUsuario}, mundo=${param.mundo}, estado=${param.estado})} : 'javascript:void(0)'">
-              Siguiente
-            </a>
-          </li>
-        </ul>
-      </nav>
+        <div class="page-info">
+            Mostrando <span th:text="${page.number * page.size + 1}">1</span> -
+            <span th:text="${T(java.lang.Math).min((page.number + 1) * page.size, page.totalElements.intValue())}">12</span>
+
+            <span th:text="${page.totalElements}">0</span> jugadores
+        </div>
+
+        <nav th:if="${page.totalPages > 1}">
+            <ul class="pagination pagination-sm mb-0">
+                <!-- Botón anterior -->
+                <li th:classappend="${!page.hasPrevious()} ? 'disabled' : ''" class="page-item">
+                    <a class="page-link"
+                       th:href="${page.hasPrevious()} ? @{/jugador(page=${page.number - 1}, size=${page.size}, nombreJugador=${param.nombreJugador}, nombreUsuario=${param.nombreUsuario}, mundo=${param.mundo}, estado=${param.estado})} : 'javascript:void(0)'">
+                        Anterior
+                    </a>
+                </li>
+
+                <!-- Números de página -->
+                <li th:each="pageNum : ${#numbers.sequence(T(java.lang.Math).max(0, page.number - 2), T(java.lang.Math).min(page.totalPages - 1, page.number + 2))}"
+                    th:classappend="${pageNum == page.number} ? 'active' : ''"
+                    class="page-item">
+                    <a class="page-link"
+                       th:href="@{/jugador(page=${pageNum}, size=${page.size}, nombreJugador=${param.nombreJugador}, nombreUsuario=${param.nombreUsuario}, mundo=${param.mundo}, estado=${param.estado})}"
+                       th:text="${pageNum + 1}">
+                        1
+                    </a>
+                </li>
+
+                <!-- Botón siguiente -->
+                <li th:classappend="${!page.hasNext()} ? 'disabled' : ''" class="page-item">
+                    <a class="page-link"
+                       th:href="${page.hasNext()} ? @{/jugador(page=${page.number + 1}, size=${page.size}, nombreJugador=${param.nombreJugador}, nombreUsuario=${param.nombreUsuario}, mundo=${param.mundo}, estado=${param.estado})} : 'javascript:void(0)'">
+                        Siguiente
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
-  </div>
+</div>
+
 
   <!-- Scripts del navbar -->
   <script>

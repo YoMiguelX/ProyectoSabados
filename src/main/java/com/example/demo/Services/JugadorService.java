@@ -3,10 +3,9 @@ package com.example.demo.Services;
 import com.example.demo.Model.Jugador;
 import com.example.demo.Repository.JugadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class JugadorService {
@@ -14,19 +13,26 @@ public class JugadorService {
     @Autowired
     private JugadorRepository jugadorRepository;
 
-    public List<Jugador> obtenerTodos() {
-        return jugadorRepository.findAll();
+    public Page<Jugador> buscarConFiltros(String nombreJugador, String nombreUsuario, String mundo, String estado, Pageable pageable) {
+        // Por ahora devolvemos todos, luego puedes implementar filtros con @Query
+        return jugadorRepository.findAll(pageable);
     }
 
-    public Optional<Jugador> obtenerPorId(Integer id) {
-        return jugadorRepository.findById(id);
+    public long contarTotal() {
+        return jugadorRepository.count();
     }
 
-    public Jugador guardar(Jugador jugador) {
-        return jugadorRepository.save(jugador);
+    public long contarActivos() {
+        return jugadorRepository.findAll().stream()
+                .filter(j -> "ACTIVO".equalsIgnoreCase(j.getEstado()))
+                .count();
     }
 
-    public void eliminar(Integer id) {
-        jugadorRepository.deleteById(id);
+    public double calcularProgresoPromedio() {
+        return jugadorRepository.findAll().stream()
+                .mapToDouble(j -> j.getProgreso() != null ? j.getProgreso().getPuntajeNivel() : 0)
+                .average()
+                .orElse(0);
     }
+
 }

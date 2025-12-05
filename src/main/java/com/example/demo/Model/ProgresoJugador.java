@@ -1,88 +1,56 @@
 package com.example.demo.Model;
 
-
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "progreso_jugador")
 public class ProgresoJugador {
 
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idProgresoJugador;
+    @Column(name = "ID_PROGRESO_JUGADOR")
+    private Integer id;
 
+    @Column(name = "PUNTAJE_NIVEL")
     private Integer puntajeNivel;
+
+    @Column(name = "nivel_completado")
     private Boolean nivelCompletado;
+
+    @Column(name = "TIEMPO_JUGADO")
     private Integer tiempoJugado;
-    private LocalDateTime fechaCompletado;
+
+    @Column(name = "FECHA_COMPLETADO")
+    private LocalDate fechaCompletado;
 
     @ManyToOne
     @JoinColumn(name = "NIVELES_ID_NIVELES")
     private Nivel nivel;
 
-    @OneToMany(mappedBy = "progresoJugador")
-    private List<Jugador> jugadores;
+    @ManyToOne
+    @JoinColumn(name = "ID_JUGADOR")
+    private Jugador jugador;
 
     // Getters y setters
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public Integer getIdProgresoJugador() {
-        return idProgresoJugador;
-    }
+    public Integer getPuntajeNivel() { return puntajeNivel; }
+    public void setPuntajeNivel(Integer puntajeNivel) { this.puntajeNivel = puntajeNivel; }
 
-    public void setIdProgresoJugador(Integer idProgresoJugador) {
-        this.idProgresoJugador = idProgresoJugador;
-    }
+    public Boolean getNivelCompletado() { return nivelCompletado; }
+    public void setNivelCompletado(Boolean nivelCompletado) { this.nivelCompletado = nivelCompletado; }
 
-    public Integer getPuntajeNivel() {
-        return puntajeNivel;
-    }
+    public Integer getTiempoJugado() { return tiempoJugado; }
+    public void setTiempoJugado(Integer tiempoJugado) { this.tiempoJugado = tiempoJugado; }
 
-    public void setPuntajeNivel(Integer puntajeNivel) {
-        this.puntajeNivel = puntajeNivel;
-    }
+    public LocalDate getFechaCompletado() { return fechaCompletado; }
+    public void setFechaCompletado(LocalDate fechaCompletado) { this.fechaCompletado = fechaCompletado; }
 
-    public Boolean getNivelCompletado() {
-        return nivelCompletado;
-    }
+    public Nivel getNivel() { return nivel; }
+    public void setNivel(Nivel nivel) { this.nivel = nivel; }
 
-    public void setNivelCompletado(Boolean nivelCompletado) {
-        this.nivelCompletado = nivelCompletado;
-    }
-
-    public Integer getTiempoJugado() {
-        return tiempoJugado;
-    }
-
-    public void setTiempoJugado(Integer tiempoJugado) {
-        this.tiempoJugado = tiempoJugado;
-    }
-
-    public LocalDateTime getFechaCompletado() {
-        return fechaCompletado;
-    }
-
-    public void setFechaCompletado(LocalDateTime fechaCompletado) {
-        this.fechaCompletado = fechaCompletado;
-    }
-
-    public Nivel getNivel() {
-        return nivel;
-    }
-
-    public void setNivel(Nivel nivel) {
-        this.nivel = nivel;
-    }
-
-    public List<Jugador> getJugadores() {
-        return jugadores;
-    }
-
-    public void setJugadores(List<Jugador> jugadores) {
-        this.jugadores = jugadores;
-    }
+    public Jugador getJugador() { return jugador; }
+    public void setJugador(Jugador jugador) { this.jugador = jugador; }
 }

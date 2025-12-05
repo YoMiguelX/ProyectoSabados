@@ -1,43 +1,61 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Dto.UsuarioDto;
-import com.example.demo.Dto.Response.ApiResponse;
-import com.example.demo.Interface.IUsuarioService;
-import jakarta.servlet.http.HttpSession;
+import com.example.demo.Model.Jugador;
+import com.example.demo.Model.Mundo;
+import com.example.demo.Services.JugadorService;
+import com.example.demo.Services.MundoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 public class JugadorController {
 
+    private final JugadorService jugadorService;
+    private final MundoService mundoService;
+
     @Autowired
-    private IUsuarioService usuarioService;
-
-    @GetMapping("/jugador")
-    public String verPerfilJugador(HttpSession session, Model model) {
-        if (session.getAttribute("usuarioId") == null) {
-            return "redirect:/login";
-        }
-
-        Integer usuarioId = (Integer) session.getAttribute("usuarioId");
-        ApiResponse<UsuarioDto> respuesta = usuarioService.findById(usuarioId);
-
-        if (respuesta.getHttpStatusCode() == 200) {
-            model.addAttribute("usuario", respuesta.getData());
-            return "perfil_jugador";
-        } else {
-            model.addAttribute("error", respuesta.getMessage());
-            return "redirect:/login";
-        }
+    public JugadorController(JugadorService jugadorService, MundoService mundoService) {
+        this.jugadorService = jugadorService;
+        this.mundoService = mundoService;
     }
 
-    @GetMapping("/perfil/salir")
-    public String cerrarSesion(HttpSession session) {
-        if (session != null) {
-            session.invalidate();
-        }
-        return "redirect:/login?logout=true";
+    @GetMapping("/jugador")
+    public String estadoJugadores(
+            @RequestParam(required = false) String nombreJugador,
+            @RequestParam(required = false) String nombreUsuario,
+            @RequestParam(required = false) String mundo,
+            @RequestParam(required = false) String estado,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            Model model) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Jugador> jugadores = jugadorService.buscarConFiltros(
+                nombreJugador,
+                nombreUsuario,
+                mundo,
+                estado,
+                pageable
+        );
+
+        List<Mundo> mundos = mundoService.findAll();
+
+        model.addAttribute("jugadores", jugadores);
+        model.addAttribute("mundos", mundos);
+        model.addAttribute("page", jugadores);
+        model.addAttribute("totalJugadores", jugadorService.contarTotal());
+        model.addAttribute("jugadoresActivos", jugadorService.contarActivos());
+        model.addAttribute("progresoPromedio", jugadorService.calcularProgresoPromedio());
+
+        return "jugador"; // tu vista Thymeleaf
     }
 }

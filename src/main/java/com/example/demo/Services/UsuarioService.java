@@ -122,7 +122,8 @@ public class UsuarioService implements IUsuarioService {
 
             Usuario saved = repo.save(usuario);
 
-            UsuarioDto dtoMapped = mapper.map(saved, UsuarioDto.class);
+            UsuarioDto dtoMapped = mapearUsuarioAUsuarioDto(saved);
+
 
             response.setHttpStatusCode(HttpStatus.CREATED.value());
             response.setMessage("Usuario registrado exitosamente");
@@ -358,5 +359,19 @@ public class UsuarioService implements IUsuarioService {
         usuario.setContrasena(passwordEncoder.encode(passwordNueva));
         repo.save(usuario);
     }
+
+
+    public static UsuarioDto toDto(Usuario usuario) {
+        return new UsuarioDto(
+                usuario.getIdUsuario(),
+                usuario.getNombreUsuario(),
+                usuario.getApellidoUsuario(),
+                usuario.getCorreoUsuario(),
+                usuario.getTelUsuario(),
+                usuario.getEstadoUsuario(),
+                usuario.getRol() != null ? usuario.getRol().getIdRol() : null
+        );
+    }
+
 
 }

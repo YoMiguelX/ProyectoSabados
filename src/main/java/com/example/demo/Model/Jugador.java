@@ -1,5 +1,6 @@
 package com.example.demo.Model;
 
+import com.example.demo.Model.BaseModel;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -7,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "jugador")
-public class Jugador extends BaseModel{
+public class Jugador extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,90 +18,40 @@ public class Jugador extends BaseModel{
     private LocalDate fechaRegistro;
     private LocalDate ultimaConexion;
     private String estado;
-    private Integer progreso;
 
     @ManyToOne
     @JoinColumn(name = "ID_USUARIO")
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "idProgresoJugador", referencedColumnName = "idProgresoJugador")
-    private ProgresoJugador progresoJugador;
+    @JoinColumn(name = "ID_PROGRESO_JUGADOR", referencedColumnName = "ID_PROGRESO_JUGADOR")
+    private ProgresoJugador progreso;
 
     @OneToMany(mappedBy = "jugador")
     private List<RespuestasJugador> respuestas;
 
-    // Getters y setters
+    //  Getters y setters
+    public Integer getIdJugador() { return idJugador; }
+    public void setIdJugador(Integer idJugador) { this.idJugador = idJugador; }
 
-    public Integer getIdJugador() {
-        return idJugador;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public void setIdJugador(Integer idJugador) {
-        this.idJugador = idJugador;
-    }
+    public LocalDate getFechaRegistro() { return fechaRegistro; }
+    public void setFechaRegistro(LocalDate fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public LocalDate getUltimaConexion() { return ultimaConexion; }
+    public void setUltimaConexion(LocalDate ultimaConexion) { this.ultimaConexion = ultimaConexion; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public LocalDate getFechaRegistro() {
-        return fechaRegistro;
-    }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    public void setFechaRegistro(LocalDate fechaRegistro) {
-        this.fechaRegistro = fechaRegistro;
-    }
+    public ProgresoJugador getProgreso() { return progreso; }
+    public void setProgreso(ProgresoJugador progreso) { this.progreso = progreso; }
 
-    public LocalDate getUltimaConexion() {
-        return ultimaConexion;
-    }
-
-    public void setUltimaConexion(LocalDate ultimaConexion) {
-        this.ultimaConexion = ultimaConexion;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public Integer getProgreso() {
-        return progreso;
-    }
-
-    public void setProgreso(Integer progreso) {
-        this.progreso = progreso;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public ProgresoJugador getProgresoJugador() {
-        return progresoJugador;
-    }
-
-    public void setProgresoJugador(ProgresoJugador progresoJugador) {
-        this.progresoJugador = progresoJugador;
-    }
-
-    public List<RespuestasJugador> getRespuestas() {
-        return respuestas;
-    }
-
-    public void setRespuestas(List<RespuestasJugador> respuestas) {
-        this.respuestas = respuestas;
-    }
+    public List<RespuestasJugador> getRespuestas() { return respuestas; }
+    public void setRespuestas(List<RespuestasJugador> respuestas) { this.respuestas = respuestas; }
 }
