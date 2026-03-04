@@ -53,6 +53,7 @@ public class UsuarioService implements IUsuarioService {
                     .map(u -> mapper.map(u, UsuarioDto.class))
                     .toList();
 
+            response.setSuccess(true);  // ← ✅ AGREGAR
             response.setHttpStatusCode(HttpStatus.OK.value());
             response.setMessage(usuarios.isEmpty()
                     ? "No hay usuarios registrados."
@@ -60,6 +61,7 @@ public class UsuarioService implements IUsuarioService {
             response.setData(usuarios);
             response.setTotalRecords(usuarios.size());
         } catch (Exception ex) {
+            response.setSuccess(false);  // ← ✅ AGREGAR
             response.setHttpStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error al obtener usuarios: " + ex.getMessage());
             response.setData(Collections.emptyList());
@@ -80,19 +82,21 @@ public class UsuarioService implements IUsuarioService {
             Usuario usuario = repo.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
             UsuarioDto dto = mapper.map(usuario, UsuarioDto.class);
+            response.setSuccess(true);  // ← ✅ AGREGAR
             response.setHttpStatusCode(HttpStatus.OK.value());
             response.setMessage("Usuario obtenido correctamente");
             response.setData(dto);
         } catch (EntityNotFoundException ex) {
+            response.setSuccess(false);  // ← ✅ AGREGAR
             response.setHttpStatusCode(HttpStatus.NOT_FOUND.value());
             response.setMessage(ex.getMessage());
         } catch (Exception ex) {
+            response.setSuccess(false);  // ← ✅ AGREGAR
             response.setHttpStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error al obtener usuario: " + ex.getMessage());
         }
         return response;
     }
-
     // ------------------------------
     // REGISTRO
     // ------------------------------
@@ -124,19 +128,19 @@ public class UsuarioService implements IUsuarioService {
 
             UsuarioDto dtoMapped = mapearUsuarioAUsuarioDto(saved);
 
-
+            response.setSuccess(true);  // ← ✅ AGREGAR ESTA LÍNEA
             response.setHttpStatusCode(HttpStatus.CREATED.value());
             response.setMessage("Usuario registrado exitosamente");
             response.setData(dtoMapped);
 
         } catch (Exception ex) {
+            response.setSuccess(false);  // ← ✅ AGREGAR ESTA LÍNEA
             response.setHttpStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setMessage("Error al registrar usuario: " + ex.getMessage());
         }
 
         return response;
     }
-
 
     // ------------------------------
     // UPDATE GENERICO CORRECTO
@@ -227,11 +231,13 @@ public class UsuarioService implements IUsuarioService {
             }
 
             UsuarioDto dto = mapearUsuarioAUsuarioDto(usuario);
+            response.setSuccess(true);  // ← ✅ AGREGAR ESTA LÍNEA
             response.setHttpStatusCode(200);
             response.setMessage("Login exitoso");
             response.setData(dto);
 
         } catch (Exception ex) {
+            response.setSuccess(false);  // ← ✅ AGREGAR ESTA LÍNEA
             response.setHttpStatusCode(401);
             response.setMessage(ex.getMessage());
         }
