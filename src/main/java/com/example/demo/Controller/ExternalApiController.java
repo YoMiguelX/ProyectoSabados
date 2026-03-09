@@ -15,8 +15,8 @@ public class ExternalApiController {
     }
 
     @GetMapping("/api/external/trivia")
-    public OpenTriviaResponse obtenerPreguntas() {
+    public OpenTriviaResponse obtenerPreguntas(int categoria) {
 
-        return openTriviaService.obtenerPreguntas();
+        return openTriviaService.obtenerPreguntas(categoria);
     }
 }
