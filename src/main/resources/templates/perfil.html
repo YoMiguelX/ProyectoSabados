@@ -318,19 +318,13 @@
                 </div>
 
                 <div class="nav-section">
-                    <h4 class="nav-title">Red Amigos</h4>
+                    <h4 class="nav-title">Herramientas interactivas</h4>
                     <ul class="nav-list">
                         <li class="nav-item" id="item-perfil" onclick="mostrarSeccion('perfil')">
                             <i class="fas fa-id-card"></i><span>Perfil</span>
                         </li>
                         <li class="nav-item" onclick="window.location.href='/categoria-cursos'">
                             <i class="fas fa-graduation-cap"></i><span>Cursos Disponibles</span>
-                        </li>
-                        <li class="nav-item" id="item-privacidad" onclick="mostrarSeccion('privacidad')">
-                            <i class="fas fa-lock"></i><span>Privacidad</span>
-                        </li>
-                        <li class="nav-item" id="item-familia" onclick="mostrarSeccion('familia')">
-                            <i class="fas fa-users"></i><span>Familia</span>
                         </li>
                         <li class="nav-item" id="item-reporte" onclick="mostrarSeccion('reporte')">
                             <i class="fas fa-flag"></i><span>Reportes</span>
@@ -530,58 +524,6 @@
                 <div class="alert-box alert-warning" style="margin-top:20px;">
                     <i class="fas fa-lightbulb"></i>
                     <span>Para editar esta información, ve a la sección "Tu información" en el menú lateral.</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- ─ Privacidad ─ -->
-        <section id="privacidad" class="seccion">
-            <div class="content-card">
-                <h2 class="section-subtitle">
-                    <i class="fas fa-user-shield"></i>
-                    <div>
-                        <div>Control de privacidad</div>
-                        <small style="font-size:13px;font-weight:400;color:#cccccc;">Decide quién puede ver tu información</small>
-                    </div>
-                </h2>
-                <form th:action="@{/usuario/actualizar-privacidad}" method="post">
-                    <label class="privacy-option">
-                        <input type="radio" name="privacidad" value="amigos" />
-                        <div class="privacy-option-content">
-                            <div class="privacy-option-title"><i class="fas fa-user-friends"></i><span>Solo Amigos</span></div>
-                            <div class="privacy-option-desc">Tu información se comparte solo con amigos confirmados</div>
-                        </div>
-                    </label>
-                    <label class="privacy-option">
-                        <input type="radio" name="privacidad" value="publico" checked />
-                        <div class="privacy-option-content">
-                            <div class="privacy-option-title"><i class="fas fa-globe"></i><span>Público</span></div>
-                            <div class="privacy-option-desc">Tu perfil es visible para todos los usuarios</div>
-                        </div>
-                    </label>
-                    <label class="privacy-option">
-                        <input type="radio" name="privacidad" value="privado" />
-                        <div class="privacy-option-content">
-                            <div class="privacy-option-title"><i class="fas fa-lock"></i><span>Privado</span></div>
-                            <div class="privacy-option-desc">Tu perfil solo es visible para ti</div>
-                        </div>
-                    </label>
-                    <button type="submit" class="btn-primary" style="width:100%;margin-top:20px;">
-                        <i class="fas fa-save"></i><span>Guardar configuración</span>
-                    </button>
-                </form>
-            </div>
-        </section>
-
-        <!-- ─ Familia ─ -->
-        <section id="familia" class="seccion">
-            <div class="content-card">
-                <h2 class="section-title">Administración de familia</h2>
-                <div class="coming-soon">
-                    <div class="coming-soon-icon"><i class="fas fa-users"></i></div>
-                    <h3 class="coming-soon-title">Próximamente disponible</h3>
-                    <p class="coming-soon-text">Esta funcionalidad estará lista pronto. Podrás gestionar los miembros de tu familia desde aquí.</p>
-                    <span class="coming-soon-badge"><i class="fas fa-clock"></i> En desarrollo</span>
                 </div>
             </div>
         </section>
